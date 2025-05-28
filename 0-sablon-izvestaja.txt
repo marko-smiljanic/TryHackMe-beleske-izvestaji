@@ -1,0 +1,40 @@
+============================================
+                 SOC IZVEŠTAJ
+          Datum: 2025-05-28
+============================================
+
+1. UVOD
+---------
+Kratak pregled događaja i svrhe izveštaja.
+
+
+2. SAŽETAK DOGAĐAJA
+-------------------
+- Datum i vreme: 2025-05-27 14:30
+- Incident: Neautorizovani pristup serveru
+- Status: Rešeno / U toku
+
+
+3. DETALJI INCIDENTA
+-------------------
+- Izvor: IP adresa 192.168.1.101
+- Opis: Detektovan neovlašćen pokušaj pristupa putem SSH brute-force napada.
+- Koraci preduzeti: Blokiran IP, resetovane lozinke, pokrenuta forenzička analiza.
+
+
+4. ANALIZA I PREPORUKE
+---------------------
+- Uzrok: Slaba lozinka na nalogu admin
+- Preporuke: Uvođenje MFA, redovna promena lozinki, pojačani monitoring.
+
+
+5. PRILOZI
+----------
+- Log fajlovi: /var/log/auth.log (izdvojeni delovi)
+- Snimci ekrana (ukoliko ih ima)
+- Drugi relevantni materijali
+
+
+============================================
+Kraj izveštaja
+============================================
