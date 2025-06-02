@@ -12,8 +12,8 @@
 
 `sudo snort -r snort.log.1748022673 -n 63`	
 
-- snort u rezim citanja: proveravamo kreirani log za prvih 63 paketa. 
-- citanje moze i preko tcpdump (-X više detalja)
+- snort u rezim citanja: proveravamo kreirani log za prvih 63 paketa.  
+citanje moze i preko tcpdump (-X više detalja)
 			
 `strings ftp-png-gif.pcap | grep -ia ftp`
 
@@ -21,9 +21,9 @@
 	
 `strings ftp-png-gif.pcap | grep -iac "530 User"`
 
-- nadji sve neuspesne logove (poruka koja se trazi je 530 user)
-- poruka: 230 user je uspesno logovanje, to je sledeci zadatak
-- poruka: 331 Password detektuje ftp login pokusaje kada se unese validan username, ali password ne
+- nadji sve neuspesne logove (poruka koja se trazi je 530 user)  
+poruka: 230 user je uspesno logovanje, to je sledeci zadatak  
+poruka: 331 Password detektuje ftp login pokusaje kada se unese validan username, ali password ne  
 	
 `strings ftp-png-gif.pcap | grep -ia "331 Password" | grep -ic "Administrator"`
 
@@ -41,8 +41,8 @@
 
 `sudo snort -c local.rules -r ftp-png-gif.pcap -X -l .`
 
-- primena pravila i logovanje 
-- -l . znaci da se kreira log fajl na trenutnoj lokaciji u cmd gde se nalazimo
+- primena pravila i logovanje  
+`-l .` znaci da se kreira log fajl na trenutnoj lokaciji u cmd gde se nalazimo
 
 `sudo snort -r snort.log.1748285776 -X`
 
@@ -50,20 +50,21 @@
 
 `alert tcp any any <> any any (msg: "gif file pronadjen!!!"; content:"GIF8"; sid: 100001; rev:1;)`	
 
-- pravilo za pronalazak GIF fajlova
-- prvi nacin: nalazi sve gif fajlove nezavisno od tipa
+- pravilo za pronalazak GIF fajlova  
+prvi nacin: nalazi sve gif fajlove nezavisno od tipa
 
 ```		
 alert tcp any any -> any any (msg:"GIF87a file detected"; content:"GIF87a"; sid:1000004; rev:1;)
 alert tcp any any -> any any (msg:"GIF89a file detected"; content:"GIF89a"; sid:1000005; rev:1;)
 ```
 	
-- drugi nacin (sa dva pravila): ovako je mozda najlakse jer samo idem kroz alert fajl i pratim poruke koji je tip gif fajla
+- drugi nacin (sa dva pravila):  
+ovako je mozda najlakse jer samo idem kroz alert fajl i pratim poruke koji je tip gif fajla
 
 `alert tcp any any <> any any (msg: "torrent file pronadjen!!!"; content:".torrent"; sid: 100001; rev:1;)`
 
-- pravilo za detekciju torrent paketa:
-- napomena: u alert delu (u konzoli) odmah nakon izveštaja ili u alert fajlu mogu da se pogledaju rezultati.
+- pravilo za detekciju torrent paketa:  
+napomena: u alert delu (u konzoli) odmah nakon izveštaja ili u alert fajlu mogu da se pogledaju rezultati.
 
 `alert tcp any any -> any any (msg:"primer"; dsize:770<>855; sid:1000001; rev:1;)`
 
@@ -75,7 +76,7 @@ alert tcp any any -> any any (msg:"GIF89a file detected"; content:"GIF89a"; sid:
 	
 # LIVE ATTACK  
 
-## Zad 1: Uzivo snimanje i sprecavanje bruteforce napada
+### Zad 1: Uzivo snimanje i sprecavanje bruteforce napada
 
 `sudo snort -dev -l .`
 
@@ -89,7 +90,7 @@ alert tcp any any -> any any (msg:"GIF89a file detected"; content:"GIF89a"; sid:
 
 - filtriramo citanje log file samo na port 22 i uzimamo prvih 10
 
-**Default lokacija snorta: /etc/snort/rules/local.rules**
+> Default lokacija snorta i njegovih pravila: /etc/snort/rules/local.rules
 
 `drop tcp any 22 <- any any (msg: "blokiran ulazni saobraćaj na portu 22 zbog bruteforce napada", sid: 100001; rev:1;)`
 
@@ -97,26 +98,24 @@ alert tcp any any -> any any (msg:"GIF89a file detected"; content:"GIF89a"; sid:
 
 `sudo snort -c /etc/snort/snort.conf -q -Q --daq afpacket -i eth0:eth1 -A full`
 
-> koristim konfiguracioni fajl za pokretanje pravila (kroz .conf fajl se ukljućuju i lokalna pravila).  
-> alternativa: sudo snort -Q --daq afpacket -i eth0:eth1 -c /etc/snort/snort.conf -A full -q
+- koristim konfiguracioni fajl za pokretanje pravila (kroz .conf fajl se ukljućuju i lokalna pravila).  
+alternativa: sudo snort -Q --daq afpacket -i eth0:eth1 -c /etc/snort/snort.conf -A full -q
 
-``` 
-iz nekog razloga ove komande meni nece da rade !!!
-sudo snort -A console -q -c /etc/snort/snort.conf -i eth0
-- pokreni Snort sa prikazom alarma direktno u terminalu (bez log fajla):			
-sudo snort -A full -q -c /etc/snort/snort.conf -i eth0
-- ponovo koristi pravilo, ali sada loguj sve detalje o napadu u fajlove. 
-```
 
-## Zad 2:  Analiza i blokiranje odlaznog saobraćaja
+Iz nekog razloga ove komande meni nece da rade !!!  Pokretanje snorta sa alarmom u direktno u terminalu
+*sudo snort -A console -q -c /etc/snort/snort.conf -i eth0*  
+*sudo snort -A full -q -c /etc/snort/snort.conf -i eth0*     
 
-**U paketima vidimo oznake (znaci neki transfer se desava):**
+
+### Zad 2:  Analiza i blokiranje odlaznog saobraćaja
 
 ```
 ***A**** znači da je TCP flag ACK uključen.
 ******S* znači da je TCP flag SYN uključen (inicijacija veze).
 ***AP*** znači ACK i PUSH flagovi su uključeni (prijenos podataka). 
 ```
+
+**U paketima vidimo oznake (znaci neki transfer se desava):**
 
 ```
 sudo snort -dev -l .
