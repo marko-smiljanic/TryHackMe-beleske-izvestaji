@@ -7,6 +7,8 @@ moze da radi u:
 -da detektuje i alarmira  
 -radi u cmd, nema gui  
 -moze da cita logove i paket analize (.pacp fajlove)  
+
+dakle: Snort je dizajniran za aktivnu detekciju u realnom vremenu. Prati mrežni saobraćaj, koristi pravila da prepozna napade, i može odmah da alarmira ili čak blokira sumnjive aktivnosti (ako se koristi kao IPS).
  
 ### Ovo su komande koje se koriste za zadatke (kroz cmd odemo u folder gde su nam fajlovi za zadatke):
 
@@ -110,8 +112,8 @@ napomena: u alert delu (u konzoli) odmah nakon izveštaja ili u alert fajlu mogu
 alternativa: sudo snort -Q --daq afpacket -i eth0:eth1 -c /etc/snort/snort.conf -A full -q
 
 
-Iz nekog razloga ove komande meni nece da rade !!!  Pokretanje snorta sa alarmom u direktno u terminalu
-*sudo snort -A console -q -c /etc/snort/snort.conf -i eth0*  
+Iz nekog razloga ove komande meni nece da rade !!!  Pokretanje snorta sa alarmom u direktno u terminalu:  
+*sudo snort -A console -q -c /etc/snort/snort.conf -i eth0*   
 *sudo snort -A full -q -c /etc/snort/snort.conf -i eth0*     
 
 
