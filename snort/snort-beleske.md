@@ -1,4 +1,12 @@
 # PCAP citanje, analiza i primena pravila  
+
+fokus snorta je na detekciju i prevenciju upada u mrezu (IDS/IPS)
+moze da radi u: 
+
+-live sniffing modu (detektuje pretnje u realnom vremenu)  
+-da detektuje i alarmira  
+-radi u cmd, nema gui  
+-moze da cita logove i paket analize (.pacp fajlove)  
  
 ### Ovo su komande koje se koriste za zadatke (kroz cmd odemo u folder gde su nam fajlovi za zadatke):
 
