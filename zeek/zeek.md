@@ -22,5 +22,35 @@ posto je to gomila podataka, na pocetku sadrzi spisak polja na osnovu kojih su g
 
 - citanje odabranog log fajla
 
+**ovde u 'fileds' vidimo kojim sve stvarima mozemo da pristupimo iz log fajla**
+
+`cat dns.log | zeek-cut query | sort | uniq`
+
+- dohvatamo jedinsvtvene dns query-je iz log fajla  
+
+`cat conn.log | zeek-cut duration | sort -n`  
+
+- sortira trajanje konekcije po uzlaznom rednosledu (`-nr` je po silaznom)
+
+### podesetnik za linux komande 
+
+> `cat` je citanje fajla  
+`head` je citanje prvih 10 linija  
+`tail` je citanje zadnjih 10 linija  
+ 
+> `history` je istorija komandi iz cmd-a  
+`!10` izvrsi 10tu komandu iz istorije  
+`!!` izvrsi proslu komandu (mada ja ovo resavam sa strelicama na tastaturi)  
+
+>`cat test.txt | cut -f 1` prikazi prvi field  
+`cat test.txt | cut -c1` prkazi prvu kolonu  
+`cat test.txt | grep 'keywords'` pronadji reci u fajlu  
+`cat test.txt | uniq` eliminisi duplikatske linije  
+
+
+
+
+
+
 
 
