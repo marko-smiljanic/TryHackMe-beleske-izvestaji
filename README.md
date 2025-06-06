@@ -8,8 +8,7 @@
 
 
 ```
-TryHackMe-beleske-izvestaji/
-├── README.md
+TryHackMe-beleske/
 ├── izvestaji/
 │   └── template.txt
 └── SOC-Lvl-1/
