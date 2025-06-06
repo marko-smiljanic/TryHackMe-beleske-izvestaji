@@ -11,6 +11,8 @@
 TryHackMe-beleske/
 ├── izvestaji/
 │   └── template.txt
+│
+│
 └── SOC-Lvl-1/
     ├── network-miner/
     ├── snort/
