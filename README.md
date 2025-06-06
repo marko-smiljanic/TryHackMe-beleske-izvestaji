@@ -7,5 +7,11 @@
  Ovde se nalazi ono što ja smatram da je bitno da zapamtim: Suština i način rada sa alatima sa fokusom na primenu nad **praktičnim zadacima**.  
 
 
+izvestaji/
+├── template.txt
 
+SOC-Lvl-1/
+├── network-miner
+├── snort
+├── zeek
  
