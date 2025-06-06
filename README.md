@@ -19,3 +19,14 @@ TryHackMe-beleske/
     └── zeek/
 ```
 
+```
+TryHackMe-beleske-izvestaji/
+├── README.md
+├── izvestaji/
+│   └── template.txt
+└── SOC-Lvl-1/
+    ├── network-miner/
+    ├── snort/
+    └── zeek/
+```
+
