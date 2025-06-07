@@ -180,7 +180,7 @@ signature ftp-brute {
 - ovde trazim koji je broj ftp brute force signature poklapanja.  
 u ovom slucaju pretrazujem signatures.log tako sto uradim cut na message (poruka koja se prikaze kada se opali brute force dogadjaj). Pogledam u pravilima koja je poruka za dogadjaj i samo prikazem njen broj poklapanja sa grep-om  
 
-# Zeek Scripts
+# Zeek Scripts - primena skripti na .pcap fajlove 
 
 zeek skripte imaju ekstenziju .Zeek  
 
@@ -220,10 +220,145 @@ za drugi primer se trazi isto samo sto moram da profiltriram rezultat jer trazim
 `cat dhcp.log | zeek-cut host_name | sort | uniq | wc -l` 
 
 - ovo je komanda koja priakze broj 18, ali to nije resenje.  
-treba da sklonim `wc -l` i onda da izbrojim rucno i tu vidim da je za jedan host stavljena samo '-' , odnosno za jedan izlistan host nema vrednosti, tako da je resenje 17... glupost koja me ukoci na pola sata...
+treba da sklonim `wc -l` i onda da izbrojim rucno i tu vidim da je za jedan host stavljena samo '-' , odnosno za jedan izlistan host nema vrednosti, tako da je resenje 17... glupost koja me ukoci na pola sata...  
 **umesto da se fokusiram na bitne stvari ja pola sata trazim da li je broj poklapanja 17 ili 18... neki primeri su bas napravljeni da oduzmu vreme bez potrebe**
 
 `cat dhcp.log | zeek-cut domain` pronalazak domen name-a  
+
+# Zeek Scripts - pisanje skripti 
+
+skripte bi trebalo da se koriste u kombinaciji sa potpisim  
+
+u skripti moze da se filtrira rezultat i kontrolise output  
+
+proste skripte izgleda ovako 
+
+```
+event new_connection(c: connection)
+{
+	print ("###########################################################");
+	print ("");
+	print ("New Connection Found!");
+	print ("");
+	print fmt ("Source Host: %s # %s --->", c$id$orig_h, c$id$orig_p);
+	print fmt ("Destination Host: resp: %s # %s <---", c$id$resp_h, c$id$resp_p);
+	print ("");
+}
+
+# %s: Identifies string output for the source.
+# c$id: Source reference field for the identifier.
+```
+
+```
+event signature_match (state: signature_state, msg: string, data: string)
+{
+if (state$sig_id == "ftp-admin")
+    {
+    print ("Signature hit! --> #FTP-Admin ");
+    }
+}
+```
+
+zeek sadrzi lokalne, osnovne skripte koje se nalaze u `/opt/ zeek /share/ zeek /base`  
+
+ucitavanje svih osnovnih skripti je pokretanjem `local` komande  
+
+`zeek -C -r ftp.pcap local`  pokretanje svih lokalnih skripti  
+
+`zeek -C -r ftp.pcap /opt/zeek/share/zeek/policy/protocols/ftp/detect-bruteforcing.zeek` 
+
+- pokretanje i provera zeek-ove gotove skripte za brute force na FTP. Provera se radi sa `cat notice.log | zeek-cut ts note msg`  
+
+ 
+### z1 
+
+`zeek -C -r sample.pcap 103.zeek` primena skripte 
+
+`cat conn.log | zeek-cut uid | wc -l` 
+
+- ocitavanje koliko ima novih konekcija detektovanih skriptom  
+
+
+### z2 
+
+> napomena: koristim `head logfajl.log` i `cat logfajl.log` da bih video koja sve zaglavlja fajl ima i generalno strukturu koja mi pomaze da znam po cemu neke atribute iz zadatak da trazim  
+
+`zeek -C -r ftp.pcap -s ftp-admin.sig 201.zeek` primena potpisa i skripte na jedan fajl
+
+`cat signatures.log | zeek-cut uid | wc -l`
+
+- broj koliko je bilo poklapanja sa signature (izbrojim svaki dogadjaj zasebno, a to je preko jedinstvenog id-ja: uid)
+
+`cat signatures.log | grep "administrator" | wc -l`
+
+- pronalazi koliko je bilo adminstrator username-ova detektovano  
+meni je lakse da se ovo odradi sa grep, jer samo admin ne moze da nadje jer ih ima dosta vise, trazi se jasno nagleseno 'administrator'  
+
+### z3
+
+`zeek -C -r ftp.pcap local` ispitati pcap fajl sa svim lokalnim skriptama  
+
+`cat loaded_scripts.log | zeek-cut path | wc -l` 
+
+- pronaci koliko je ukupno skripti ucitano  
+ovo radim tako sto vidim da svaka skripta ima svoj zaseban header 'path' i onda samo njega izbrojim  
+
+### z4
+
+`zeek -C -r ftp-brute.pcap /opt/zeek/share/zeek/policy/protocols/ftp/detect-bruteforcing.zeek`
+
+- provera sa pcap fajla sa skriptom koja se nalazi na putanji 
+
+`cat notice.log | zeek-cut uid | wc -l`
+
+- istrazivanje log fajla i pronalazak ukupnog broja brute force napada
+
+# Zeek Frameworks
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
