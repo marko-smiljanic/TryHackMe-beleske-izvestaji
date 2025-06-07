@@ -182,7 +182,48 @@ u ovom slucaju pretrazujem signatures.log tako sto uradim cut na message (poruka
 
 # Zeek Scripts
 
+zeek skripte imaju ekstenziju .Zeek  
 
+lokacija zeek skripti je:
+
+> `/opt/ zeek /share/ zeek /base` ovo su osnovne skripte i **nisu namenjene da se menjaju!!** 
+> `/opt/ zeek /share/ zeek /site` korisnicki generisane ili izmenjene skripte 
+> `/opt/ zeek /share/ zeek /policy` skripte smernica 
+> `/opt/ zeek / share/ zeek /site/local.zeek` konfiguraciona datotetka
+> pozivanje skripti u rezimu pracenja uzivo `load @/script/path` `load @script-name`
+
+build-in funkcije i skripte 
+
+> ```
+> /opt/zeek/share/zeek/base/bif
+> /opt/zeek/share/zeek/base/bif/plugins
+> /opt/zeek/share/zeek/base/protocols
+> ```  
+
+`zeek -C -r smallFlows.pcap dhcp-hostname.zeek`
+
+- ovako se pokrece skripta  
+
+### z1
+
+`zeek -C -r smallFlows.pcap dhcp-hostname.zeek` pokrenem skriptu za pcap fajl  
+
+`cat dns.log` 
+- i pronadjem domen value za vinlap01 host, moze i direktno sa cut da se trazi domen ali ovako je jednostavnije, samo pogledati 
+
+### z2
+
+za drugi primer se trazi isto samo sto moram da profiltriram rezultat jer trazim unique hostnames  
+
+`zeek -C -r bigFlows.pcap dhcp-hostname.zeek` pokrenem skriptu nad pcap fajlom  
+
+`cat dhcp.log | zeek-cut host_name | sort | uniq | wc -l` 
+
+- ovo je komanda koja priakze broj 18, ali to nije resenje.  
+treba da sklonim `wc -l` i onda da izbrojim rucno i tu vidim da je za jedan host stavljena samo '-' , odnosno za jedan izlistan host nema vrednosti, tako da je resenje 17... glupost koja me ukoci na pola sata...
+**umesto da se fokusiram na bitne stvari ja pola sata trazim da li je broj poklapanja 17 ili 18... neki primeri su bas napravljeni da oduzmu vreme bez potrebe**
+
+`cat dhcp.log | zeek-cut domain` pronalazak domen name-a  
 
 
 
