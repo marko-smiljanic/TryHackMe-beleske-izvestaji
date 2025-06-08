@@ -132,7 +132,7 @@ signature http-password {
 
 `cat signatures.log | zeek-cut src_addr` 
 
-- otvorim fajl da vidim kako se zove field za source adresu (ili preko head pretrazim u cmd), i onda pomocu zeek-cut isecem potreban podatak (source adresa)  
+- otvorim fajl da vidim kako se zove field za source adresu (ili preko `head imefajla.log` pretrazim u cmd), i onda pomocu zeek-cut isecem potreban podatak (source adresa)  
 - mogu pored source adrese da prikazem i poruku `cat signatures.log | zeek-cut event_msg src_addr`  
 
 `cat signatures.log | zeek-cut src_port` 
@@ -315,10 +315,35 @@ ovo radim tako sto vidim da svaka skripta ima svoj zaseban header 'path' i onda 
 
 # Zeek Frameworks
 
+`zeek -C -r case1.pcap /opt/zeek/share/zeek/policy/frameworks/files/hash-all-files.zeek` izvrsavanje skripti (konkretno ova je za hesovanje)
 
+`zeek -C -r case1.pcap /opt/zeek/share/zeek/policy/frameworks/files/extract-all-files.zeek` izvrsavanje skripti za izvlacenje svih fajlova (automatski se kreira folder extract_files)
 
+> `/opt/zeek/intel/zeek_intel.tx` lokacija za intel podatke
 
+### z1
 
+treba primeniti inteligence skriptu i pronaci drugo resenje iz intel log fajla (odakle su informacije?)
+
+`zeek -C -r case1.pcap intelligence-demo.zeek` 
+
+`cat intel.log` provera sta se nalazi u fajlu 
+
+`cat intel.log | zeek-cut seen.where` pregled zaglavalja seen where i pogledamo drugi rezultat
+
+`cat http.log | zeek-cut uri` pregled http.log fajla i pronalazak imena skinutog .exe fajla
+
+`zeek -C -r case1.pcap hash-demo.zeek` primena hash demo skripte 
+
+`head files.log` mogao sam i sa cat, gledam kako je upisan field za md5 hash
+
+`cat files.log | zeek-cut md5` da pronadjem koja je md5 hes vrednost za .exe fajl
+
+`zeek -C -r case1.pcap file-extract-demo.zeek` primenjujemo skriptu za ekstraktovanje fajlova 
+
+`cd extract_files` pokretanje ove skripte stvara folder u kome su fajlovi i zato se moram prebaciti 
+
+`cat extract-1561667874.743959-HTTP-Fpgan59p6uvNzLFja` citam sadrzaj tekst fajla 
 
 
 
