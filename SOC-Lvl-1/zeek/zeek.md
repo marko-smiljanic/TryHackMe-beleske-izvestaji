@@ -388,6 +388,7 @@ vidim da se username ne pominje u fields vec u purukama (messages)
 `zeek -Cr case2.pcap sumstats-counttable.zeek` ovo pokrenem i vidim koliko razlicitih status code-a ima
 
 
+# Zeek vezbe u realnom scenariju 
 
 
 
