@@ -231,6 +231,8 @@ skripte bi trebalo da se koriste u kombinaciji sa potpisim
 
 u skripti moze da se filtrira rezultat i kontrolise output  
 
+sadrzaj skripte moze da se prikaze sa `cat`
+
 proste skripte izgleda ovako 
 
 ```
@@ -344,6 +346,49 @@ treba primeniti inteligence skriptu i pronaci drugo resenje iz intel log fajla (
 `cd extract_files` pokretanje ove skripte stvara folder u kome su fajlovi i zato se moram prebaciti 
 
 `cat extract-1561667874.743959-HTTP-Fpgan59p6uvNzLFja` citam sadrzaj tekst fajla 
+
+# Package manager
+
+zeek package manager pomaze da instaliramo skripte i plugine. komanda kojim se manipulise je `zkg`. (obavezna root privilegija)  
+
+`zkg list` izlistava sve pakete 
+
+> napomena: pozivanje zeek skripti (paketa) moze da bude:  
+> pozivanje direktno, pozivanje preko putanje i preko imena paketa 
+
+```
+zeek -Cr http.pcap sniff-demo.zeek 
+zeek -Cr http.pcap /opt/zeek/share/zeek/site/zeek-sniffpass
+zeek -Cr http.pcap zeek-sniffpass 
+```
+
+### z1 
+
+`zeek -Cr http.pcap zeek-sniffpass` primenjujem paket 
+
+otvorim notice log kroz `cat` i istrazujjem kako da dodjem do username-a...  
+
+vidim da se username ne pominje u fields vec u purukama (messages)  
+
+`cat notice.log | grep "user" | sort` 
+
+- pristupam sa obicnim grepom jer mi je tako najlakse bilo, verovatno se ovo trebalo odraditi sa `zeek-cut` i da gadjam field msg...  
+**zapravo ovako mi ispise bolje...** `cat notice.log | zeek-cut msg | sort`
+
+### z2
+
+`zeek -Cr case1.pcap geoip-conn` pokrecem geo skriptu
+
+`cat conn.log | zeek-cut geo.resp.city | sort` dobavljam koji je grad u pitanju
+
+`cat conn.log | zeek-cut geo.resp.city id.resp_h` dobavljam i ip adresu svakog grada
+
+### z3 
+
+`zeek -Cr case2.pcap sumstats-counttable.zeek` ovo pokrenem i vidim koliko razlicitih status code-a ima
+
+
+
 
 
 
