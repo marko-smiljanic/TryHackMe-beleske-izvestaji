@@ -492,6 +492,12 @@ ovo sam video i pre kad sam istrazivao http.log i files.log
 
 `cat http.log | zeek-cut user_agent` citamo http log i trazimo koji alat je korisce nza skeniranje, field koji gadjam je user_agent 
 
+`cat http.log | zeek-cut uri | uniq` da vidim koje je ekstenzije exploit  
+
+`cat log4j.log | head -n 10` istrazujem koji je sastav i kakva su zaglavlja log4j fajla
+
+`cat log4j.log | zeek-cut uri | uniq` vidim da ima i base 64 komandi - ukupno 3, to dekodujem i trazim detalje o komandi za pravljenje fajlova `touch`  
+
 
 
 
