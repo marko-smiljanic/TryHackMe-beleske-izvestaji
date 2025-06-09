@@ -388,7 +388,7 @@ vidim da se username ne pominje u fields vec u purukama (messages)
 `zeek -Cr case2.pcap sumstats-counttable.zeek` ovo pokrenem i vidim koliko razlicitih status code-a ima
 
 
-# Zeek vezbe u realnom scenariju 
+# Zeek prakticni zadaci i vezbe
 
 moram obratiti paznju u gde se nalaze fajlovi za odredjene zadatke 
 
@@ -398,6 +398,8 @@ detektovan je alarm za losu dns aktivnost
 
 ovde se koristi obican zeek citac .pcap vajlova  
 
+**pronaci pojave ipv6 adrese** 
+
 `zeek -C -r dns-tunneling.pcap` izvrsavamo zeek nad pcap fajlom 
 
 `cat dns.log | head -n 10` uzimamo prvih 10 linija iz fajla da vidimo strukturu
@@ -406,11 +408,15 @@ ovde se koristi obican zeek citac .pcap vajlova
 
 - trazimo jedinsvene pojave po field-u qtype_name. Kada nam izlista sve brojeve pojava, trazimo AAA pojavu koja oznacava ipv6 adresu
 
+**dohvatiti koliko je trajala najduza konekcija**
+
 `head conn.log` da vidimo koji field ce nam odgovarati 
 
 `cat conn.log | zeek-cut duration | sort -n`
 
-- dohvatamo atribut duration i sortiramo da vidimo koja je najduza konekcija 
+- dohvatamo atribut duration
+
+**treba pronaci domene koji nisu cisco-update.com**
 
 ovako nesto predlaze THM platforma...
 
@@ -429,11 +435,13 @@ a ovako bih ja resio, jer mi je jednostavnije, ali nisam ni shvatio najbolje sta
 
 - `-v` znaci obrnuta pretraga, vrati sve ono sto ne sadrzi ciscov domen 
 
+**pronaci adresu hosta koji salje previse dns query-ja na isti domen**
+
 `cat dns.log | head -n 10` gledam koji field odgovara za source adresu 
 
 `cat dns.log | zeek-cut id.orig_h | sort | uniq`
 
-- pronalazim ip adresu source hosta koji salje previse dns query-ja na isti domen 
+- pronalazim ip adresu source hosta
 
 ## z2 - Phising 
 
@@ -441,7 +449,7 @@ ovde vidim da imam na raspolaganju skriptu koja je data u folderu zadatka (file 
 
 `zeek -Cr phishing.pcap` citam pcap da dobijem logove 
 
-trazi se ip adresa napada i zbog toga se fokusiram na `conn.log`  
+**trazi se ip adresa napada i zbog toga se fokusiram na `conn.log` fajl**  
 
 `cat conn.log | head -n 10` gledam zaglavlja iako znam da je atribut za adresu id.orig_h 
 
@@ -449,23 +457,27 @@ trazi se ip adresa napada i zbog toga se fokusiram na `conn.log`
 
 - bez uniq vidim da ima gomila adresa ali kad stavim uniq vidi se da je sve doslo sa jedne adrese
 
-**sada odem na cyberchef github i uradim defang adrese (defang je bezbedan zapis kako adresa ne bi bila klikabilna)**  
+*sada odem na cyberchef github i uradim defang adrese (defang je bezbedan zapis kako adresa ne bi bila klikabilna)*  
 
 defang za ovu adresu izgleda ovako: 10[.]6[.]27[.]102
 
+**istraziti http.log i pronaci koja je source adresa malicioznog fajla** 
+
 `cat http.log | zeek-cut source filename` 
 
-- istrazujem http.log da pogledam koja je adresa malicioznog fajla 
+- ovde prikazujem adresu i pored ime fajla kako bi bilo lakse pregledno
+
+**proveriti http.log i pronaci sa kojeg domena je maliciozni sajt**
 
 `cat http.log | zeek-cut host uri | sort`
 
-- isecam adresu i uri kako bih video sa kojeg domena je maliciozni fajl
+- isecam adresu i uri i tu vidim dosta informacija 
 
-treba da izvadim hes md5 malicioznog fajla, za to cu koristiti skriptu `hash-demo.zeek`
+**treba da izvadim hes md5 malicioznog fajla i proverim na virus total, za to cu koristiti prilozenu skriptu `hash-demo.zeek`**
 
 `zeek -Cr phishing.pcap hash-demo.zeek` 
 
-- kada izvrsim skriptu dobijem files.log
+- kada izvrsim skriptu dobijem *files.log*
 
 `cat files.log` da pogledam sta se uopste nalazi u fajlu 
 
@@ -479,71 +491,35 @@ na virus total za docexec trazim kako se zove fajl. To je prvi podatak koji mi i
 
 kroz virus total proveravam .exedoc fajl idem behaviour > dns resolutions i uradim defang uz pomoc cyberchef-a. Problem je sto ima puno stavki i resenje je **hopto[.]org**  
 
+**treba dohvatiti ime malicioznog fajla** 
+
 `cat http.log | zeek-cut uri` 
 
-- dohvatam kako se zove skinuti maliciozni exe fajl (knr.exe)  
-ovo sam video i pre kad sam istrazivao http.log i files.log 
+- exe fajl (knr.exe)  
+ovo sam video i pre kad sam istrazivao http.log i files.log. Uri daje dosta razlicitih informacija.
 
-## z2 Log4J
+## z3 Log4J
 
 `zeek -Cr log4shell.pcapng detection-log4j.zeek` primenjujem skriptu za pcapng fajl 
 
-`cat signatures.log | zeek-cut uid` nakon izvrsene skripte proveravam signatures log fajl da vidim koliko je bilo poklapanja ukupno (koliko ukupno redova ima u fajlu)  
+**nakon izvrsene skripte proveriti signatures fajl i videti koliko je poklapanja ukupno** 
 
-`cat http.log | zeek-cut user_agent` citamo http log i trazimo koji alat je korisce nza skeniranje, field koji gadjam je user_agent 
+`cat signatures.log | zeek-cut uid`
 
-`cat http.log | zeek-cut uri | uniq` da vidim koje je ekstenzije exploit  
+**pronaci alat koji je koriscen za skeniranje. Citati http.log fajl. Gadjam field user_agent**  
+
+`cat http.log | zeek-cut user_agent` 
+
+**pronaci koja je ekstenzija ekspoita**  
+
+`cat http.log | zeek-cut uri | uniq`  
+
+**pronaci koji fajl je kreiran uz pomoc base 64 enkodovane komande. Istraziti log4j fajl** 
 
 `cat log4j.log | head -n 10` istrazujem koji je sastav i kakva su zaglavlja log4j fajla
 
-`cat log4j.log | zeek-cut uri | uniq` vidim da ima i base 64 komandi - ukupno 3, to dekodujem i trazim detalje o komandi za pravljenje fajlova `touch`  
+`cat log4j.log | zeek-cut uri | uniq` 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+- vidim da ima ukupno 3 komandi, redom dekodujem i trazim detalje o komandi za pravljenje fajlova `touch`  
 
 
