@@ -200,24 +200,6 @@ setimo se alerta, kucamo njega u pretragu i onda gledamo detalje
 alert je: Crypto Currency Mining Activity Detected, i kad to ukucam vidim detalje... a moze da se uradi i sa upitomn `event_type=="alert" | cut alert.metadata.mitre_tactic_id | uniq`  
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+## NAPOMENA: za z1 sam radio screenshot, za z2 nisam, mrzelo me, i ovako mi je uzelo previse vremena 
 
 
