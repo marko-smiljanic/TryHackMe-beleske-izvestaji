@@ -10,4 +10,4 @@
 
 U beleške nisam stavljao rešenja baš svega. Beležio sam ono što sam smatrao da je meni bitno, bez previše detaljisanja (kako bih posle lakše mogao da se podsetim).  
 
-Praktični zadaci su postavljeni takko da se od mene traži da nešto uradim na virtuelnoj mašini i da tačno ogovorim na pitanje koje je vezano za taj zadatak.  
+Praktični zadaci su postavljeni tako da se od mene traži da nešto uradim na virtuelnoj mašini i da tačno ogovorim na pitanje koje je vezano za taj zadatak.  
