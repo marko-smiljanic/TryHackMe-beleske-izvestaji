@@ -7,7 +7,7 @@ otvorimo trazeni fajl kroz wireshark i idemoa na statistic > capture file proper
 
 u capture file properties vidimo i koji je ukupan broj paketa. Na ovom mestu imamo i hes fajla i mnoge druge podatke   
 
-### disekcija paketa i detalji paketa
+## disekcija paketa i detalji paketa
 
 wireshark koristi OSI slojeve za razlaganje paketa.  
 
@@ -44,12 +44,53 @@ imamo tri opcije za pretrazivanje paketa: detlaji, lista paketa i bajtovi paketa
 > format prikaza fremena, podrazumevano u wiresharku su postavljene sekunde od pocetka snimanja a mi bi trebali promeniti u UTC date and time of day (view > time display format)  
 
 > analyze > expert information da vidimo poruke i specificna stanja protokola koji mogu da ukazuju na anomalije i probleme  
+> ovde moze da se udje i skroz u donjem levom cosku crvena ikonica
 
 **u jednom zadatku se trazi da se istraze komentari paktea**
 
-- u komentaru ovog paketa se nalazi da skocimo na jedan paket i istrazimo .jpg.  
-- odemo na jpg i exportujemo na desktop (desni klik na jpg deo paketa i export packey bytes i sacuvamo na desktop)
+- u komentaru ovog paketa se nalazi uputstvo da skocimo na drugi paket i istrazimo jpg deo tog paketa (dobijemo id)  
+- odemo na jpg i exportujemo na desktop (desni klik na jpg deo paketa i export packet bytes i sacuvamo na desktop)
 - kada sliku sacuvamo na desktop idemo kroz terminal do nje i uradimo `md5sum slika.jpg`
+- drugi nacin za ovo bez pronalaska paketa preko id-a nego odmah kroz: file > export objects > http > pretrazimo sa jpg i onda vidimo broj paketa 
+
+**potrebno je naci nesto iz nekog .txt fajla **
+- file > export objects > http > u pretragu kucamo txt > i cuvamo na desktop taj pronadjeni fajl, zatim otvorimo i procitamo flag 
+- drugi nacin da nadjemo paket po id-ju (paket iz prethodnog zadatka) i nadjemo pod HTTP > line based text data  
+
+**zadatak da se procita koliko ima warning-a**\
+
+- odemo u expert information i prosirimo postojeci prozor da bi mogli da vidimo na desnoj strani ukupan broj za alert koji nas interesuje  
+
+
+## filtriranje paketa 
+
+wireshark ima mocan mehanizam koji filtrira pakete, koji omogucava suzavanje saobracaj i fokus na dogadjaje koji nas zanimaju  
+
+kliknemo na polje paketa koje zelimo da filtriramo i desni klik > conversation filter
+
+u istom meniju imamo i colorise conversation koji se koristi da oboji i istakne pakete sa primenom filtera i one bez primene filtera. Radi na principu pravila bojenja. Boja na istom mestu moze da se i resetuje  
+
+ove dve opcije mogu da se pokrenu kroz view karticu  
+
+desni klik > pripremi kao filter znaci da kreiramo filter, dodaje upit i ceka komandu za izvrsenje 
+
+analyze > primeni kao kolonu pruza osnovne informacije o svakom paketu (moze se uci i preko desnog klika)  
+
+pracenje strima je opcija koja nam omogucava rekonstruisanje tokova i prikaz sirovog saobracaja kako je predstavljen na nivou aplikacije (moze i preko menija desnog klika ili analyze > follow)  
+
+**pronaci paket 4 i u njemu http i primeniti ga kao filter**
+
+- desni klik na http, primenim ga kao filter (gore u traci gde se kuca tekst vidimo koji je filter query: http)  
+
+**koliko je ukupno ostalo paketa nakon primene filtera**
+
+- to vidimo skroz dole u traci pod 'displayed'
+
+**otici na paket 33790, pratit http stream i videti odgovore. PRoveriti odgovore na veb serveru i odgovoriti kolikko je ukupno umetnika**
+
+- u zadatku kaze da se radi sa: desni klik na paket > follow > tcp stream, ali ja tako ne mogu da nadjem resenje
+- radim file > export object... u pretragu za export kucam artist i prikaze se artist.php i proverim da je to taj id paketa koji trazim i onda sacuvam fajl na desktop. Nakon toga otvorim fajla (sa pluma) i pronadjem koliko ima artista u kodu (artist=1, ...)  
+
 
 
 
