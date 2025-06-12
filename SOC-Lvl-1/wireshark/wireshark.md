@@ -7,7 +7,7 @@ otvorimo trazeni fajl kroz wireshark i idemoa na statistic > capture file proper
 
 u capture file properties vidimo i koji je ukupan broj paketa. Na ovom mestu imamo i hes fajla i mnoge druge podatke   
 
-### disekcija paketa i detakji paketa
+### disekcija paketa i detalji paketa
 
 wireshark koristi OSI slojeve za razlaganje paketa.  
 
@@ -33,10 +33,23 @@ poslednji zadatak je da se prosle e-tag value. Za to moramo da idemo u http sekc
 
 imamo tri opcije za pretrazivanje paketa: detlaji, lista paketa i bajtovi paketa  
 
+> oznacavanje paketa, ako zelimo da oznacimo nesto na sta treba obratiti paznju... desni klik na paket > mark/unmark
 
+> dodavanje komentara paketa desni klik > packet comment  
 
+> posto wireshark nije IDS nekad je potrebno izvesti pakete na dalju obradu... file > export specified packet 
 
+> takodje postoji i izvoz objekata ali samo za odredjene protokole file > export objects (ovo je znacajno da se otkriju deljene datoteke i za dalju istragu)  
 
+> format prikaza fremena, podrazumevano u wiresharku su postavljene sekunde od pocetka snimanja a mi bi trebali promeniti u UTC date and time of day (view > time display format)  
+
+> analyze > expert information da vidimo poruke i specificna stanja protokola koji mogu da ukazuju na anomalije i probleme  
+
+**u jednom zadatku se trazi da se istraze komentari paktea**
+
+- u komentaru ovog paketa se nalazi da skocimo na jedan paket i istrazimo .jpg.  
+- odemo na jpg i exportujemo na desktop (desni klik na jpg deo paketa i export packey bytes i sacuvamo na desktop)
+- kada sliku sacuvamo na desktop idemo kroz terminal do nje i uradimo `md5sum slika.jpg`
 
 
 
