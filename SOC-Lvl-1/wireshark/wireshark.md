@@ -86,15 +86,13 @@ pracenje strima je opcija koja nam omogucava rekonstruisanje tokova i prikaz sir
 
 - to vidimo skroz dole u traci pod 'displayed'
 
-**otici na paket 33790, pratit http stream i videti odgovore. PRoveriti odgovore na veb serveru i odgovoriti kolikko je ukupno umetnika**
+**otici na paket 33790, pratit http stream i videti odgovore. Proveriti odgovore na veb serveru i odgovoriti kolikko je ukupno umetnika**
 
 - u zadatku kaze da se radi sa: desni klik na paket > follow > tcp stream, ali ja tako ne mogu da nadjem resenje
-- radim file > export object... u pretragu za export kucam artist i prikaze se artist.php i proverim da je to taj id paketa koji trazim i onda sacuvam fajl na desktop. Nakon toga otvorim fajla (sa pluma) i pronadjem koliko ima artista u kodu (artist=1, ...)  
+- radim file > export object... u pretragu za export kucam artist i prikaze se artist.php (proverim da je to taj id paketa koji trazim) i onda sacuvam fajl na desktop. Nakon toga otvorim fajla (sa pluma) i pronadjem koliko ima artista u kodu (artist=1, ...)  
 
 
-
-
-
+# WireShark Packet Operations 
 
 
 
