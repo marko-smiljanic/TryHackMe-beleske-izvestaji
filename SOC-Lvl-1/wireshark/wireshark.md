@@ -3,7 +3,7 @@
 WireShark je alat koji nije primarno IDS nego samo radi dubinsku analizu i istrazivanje paketa. Ne modifikuje pakete, vec ih samo cita...  
 Wireshark je GUI alat.  
 
-otvorimo trazeni fajl kroz wireshark i idemoa na statistic > capture file properties i nadjemo flag u komentarima fajla  
+otvorimo trazeni fajl kroz wireshark i idemo na statistic > capture file properties i nadjemo flag u komentarima fajla  
 
 u capture file properties vidimo i koji je ukupan broj paketa. Na ovom mestu imamo i hes fajla i mnoge druge podatke   
 
@@ -31,8 +31,6 @@ poslednji zadatak je da se prosle e-tag value. Za to moramo da idemo u http sekc
 - go > go to packet -otvori se meni za pretragu paketa po id-ju  
 - edit > find packet -pronadji paket po sadrzaju (pretrage mozemo podesiti da budu osetljiva na velika i mala slova)  
 
-imamo tri opcije za pretrazivanje paketa: detlaji, lista paketa i bajtovi paketa  
-
 > oznacavanje paketa, ako zelimo da oznacimo nesto na sta treba obratiti paznju... desni klik na paket > mark/unmark
 
 > dodavanje komentara paketa desni klik > packet comment  
@@ -46,7 +44,9 @@ imamo tri opcije za pretrazivanje paketa: detlaji, lista paketa i bajtovi paketa
 > analyze > expert information da vidimo poruke i specificna stanja protokola koji mogu da ukazuju na anomalije i probleme  
 > ovde moze da se udje i skroz u donjem levom cosku crvena ikonica
 
-**u jednom zadatku se trazi da se istraze komentari paktea**
+**u jednom zadatku se trazi da se istraze komentari paketa**
+
+sa opcijom go to packet pronadjemo paket po id-ju
 
 - u komentaru ovog paketa se nalazi uputstvo da skocimo na drugi paket i istrazimo jpg deo tog paketa (dobijemo id)  
 - odemo na jpg i exportujemo na desktop (desni klik na jpg deo paketa i export packet bytes i sacuvamo na desktop)
@@ -54,13 +54,12 @@ imamo tri opcije za pretrazivanje paketa: detlaji, lista paketa i bajtovi paketa
 - drugi nacin za ovo bez pronalaska paketa preko id-a nego odmah kroz: file > export objects > http > pretrazimo sa jpg i onda vidimo broj paketa 
 
 **potrebno je naci nesto iz nekog .txt fajla **
-- file > export objects > http > u pretragu kucamo txt > i cuvamo na desktop taj pronadjeni fajl, zatim otvorimo i procitamo flag 
+- file > export objects > odaberemo http > u pretragu kucamo txt > i cuvamo na desktop taj pronadjeni fajl (koji odgovara id-ju paketa), zatim otvorimo i procitamo flag 
 - drugi nacin da nadjemo paket po id-ju (paket iz prethodnog zadatka) i nadjemo pod HTTP > line based text data  
 
 **zadatak da se procita koliko ima warning-a**\
 
 - odemo u expert information i prosirimo postojeci prozor da bi mogli da vidimo na desnoj strani ukupan broj za alert koji nas interesuje  
-
 
 ## filtriranje paketa 
 
@@ -86,13 +85,46 @@ pracenje strima je opcija koja nam omogucava rekonstruisanje tokova i prikaz sir
 
 - to vidimo skroz dole u traci pod 'displayed'
 
-**otici na paket 33790, pratit http stream i videti odgovore. Proveriti odgovore na veb serveru i odgovoriti kolikko je ukupno umetnika**
+**otici na paket 33790, pratiti http stream i videti odgovore. Proveriti odgovore na veb serveru i odgovoriti kolikko je ukupno umetnika**
 
 - u zadatku kaze da se radi sa: desni klik na paket > follow > tcp stream, ali ja tako ne mogu da nadjem resenje
 - radim file > export object... u pretragu za export kucam artist i prikaze se artist.php (proverim da je to taj id paketa koji trazim) i onda sacuvam fajl na desktop. Nakon toga otvorim fajla (sa pluma) i pronadjem koliko ima artista u kodu (artist=1, ...)  
 
-
 # WireShark Packet Operations 
+
+meni statistika pruza dosta dodatnih opcija: 
+- resolved address: prikazuje razresene ip adrese i dns
+- protocol hierarchy: prikazuje statistiku koriscenih protokola i portova 
+- conversations: prikazuje listu razgovora izmedju dva endopoint-a (ethernet, ipv4, ipv6, TCP, UDP) 
+- endopoints: slicno konverzacijama ali prikazuje info za jedno specificno polje. Takodje postoji opcija name resolution da pretvara mac adrese u format citljiv ljudima (dostupno samo za eternet)
+
+takodje postoje opcije za razresavanja ip iu port imena, ali ova opcija mora da se omoguci u edit > preferences > name resolution  
+
+wireshark pruza i mapiranje geolokacije na IP adresu (odredjivanje izvorne i odredisne adrese). Funkciju je potrebno aktivirati na edit > preferences > name resolkution > maxMind database. Ove informacije ce se nalaziti u detlajima IP protokola za podudarne adrese (u endpoints). Da bi se videla geolokacija potrebna je internet veza ali VM za vezbu nema.  
+
+**pronaci ip adresu za hostname koji pocinje sa bbc**
+
+ovo trazimo u statistics > resolved addres i tu imam pretragu da kucam 
+
+**koliko ukupno ima ipv4 konverzacija**
+
+ovo trazimo statistic > conversations i odmah u kartici za ipv4 vidimo broj (samo sacekati da se ucita sve)
+
+**koliko bajtova je prebaceno od micro st mac adrese**
+
+sad odem na statistic > endopints i ukljucim name resolutions i pronadjem mac adresu 
+
+**koji je broj ip adresa povezanih sa kansas city**
+
+prvo moram ukljuciti opciju:  edit > preferences > name resolkution > maxMind database.   
+
+Onda pogledati u endpoints
+
+**koja ip adresa je povezana sa blicnet organizacijom**
+
+edit > preferences > name resolution i ukljucim resolve ip addres (a mogu i transport names)  
+
+iskljucim name resolution da bih video adresu 
 
 
 
