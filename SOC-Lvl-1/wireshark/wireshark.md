@@ -126,9 +126,27 @@ edit > preferences > name resolution i ukljucim resolve ip addres (a mogu i tran
 
 iskljucim name resolution da bih video adresu 
 
+## u statistici imamo jos opcija za prikaz
 
+u tabu statistic imamo jos:
 
+- ipv4 ipv6 prikazuje sve opcije za obe verzije ip adresa. Mozemo prikazati sve dogadjaje povezane sa odredjenima dresama u jednom prozoru 
+- dns: prikazuje ukupnu upotrebu dns servisa (rcode, opcode, class, query type, query stats)
+- http: vidimo kodove zahteva i odgovora na originalne zahteve
 
+**koja je najcesca odredisna adresa**
+
+vidimo u statistic > ipv4 > source and destination adress > zatvorimo surce deo i sortiramo po count prikaz 
+
+**koji je max vreme zahteva i odgovora na uslugu za dns pakete**
+
+statistic > dns i pod service stats nadjemo max vrednost 
+
+**koliki je broj ip zahteva koje je izvrsio rad[.]msn[.]com**
+
+statistic > http > load distribution i malo je teze pronaci za ovu adresu ukupno, jer se pojavljuje na vise ispisa i tesko je prepoznati koje je ukupno 
+
+# Packet filtering - principles 
 
 
 
