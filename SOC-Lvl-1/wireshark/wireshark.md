@@ -148,33 +148,121 @@ statistic > http > load distribution i malo je teze pronaci za ovu adresu ukupno
 
 # Packet filtering - principles 
 
+capture > capture filter je pregled filtera za hvatanje saobracaja  
 
+ovo je najmocnija funkcija wireshark-a. Podrzava 3000 protokla i omogucava pretragu na nivou paketa sa detaljnim pregledom  
 
+pregled filtera analyze > display filters 
 
+operatori za filtriranje su isti kao i u programiranju (!=, ==, &&, || itd.)  
 
+traka sa filterima boji filtere kao vazeci, nevazeci i upozorenje (odnosi se se na rad filtera)  
 
+filteri se kucaju u traku iznad prikaza paketa i tu imamo jos opcija za filter...   
 
+primer ip filtera:  
 
+- ip.addr == neka adresa/24 - prikazi sve pakete koji sadrze ip adrsu ili adrese iz podmreze  
+- ip.src  
+- ip.dst  
 
+primer tcp/udp filtera:  
 
+- tcp.port == 80 ili udp.port == 80
+- tcp.srcport == ili udp.srcport  
+- tcp.dstport == ili udp dstport
 
+drugi filteri:  
 
+- http - prikazi sve http pakete  
+- dns - prikazi sve dns pakete  
+- http.response.code == 200 - prikazi sve http sa 200 OK  
+- dns.flags.response == 0 - prikazi sve dns zahteve  
+- dns.flags.response == 1 - prikazi sve dns odgovore  
+- http.request.method == "GET"  
+- dns.qry.type == 1 - sve DNS A zapise  
 
+**wireshark ima opciju analyze > display filter expression. Ovde vidimo detalje za odredjeni protokol i ostale informacije koje se mogu dodeliti nekom filteru**  
 
+**koliki je broj ip paketa**
 
+u polje za fitler unosim samo `ip` i procitam dole broj prikazanih paketa 
 
+**koji je broj paketa sa TTL value less than 10?**
 
+pisem filter: `ip.ttl < 10`  
 
+**koji je broj paketa koji koristi TCP port 4444**
 
+`tcp.port == 4444`
 
+> kad kucam filtere cak mi i izadje pomoc u vidu auto-complete-a
 
+**koji je broj http get zahteva poslatih na port 80re**
 
+ovde moram kombinovati dva upita sa and: `http.request.method == "GET" && tcp.dstport == 80`
 
+**koji je broj type A DNS query-ja**
 
+dns.qry.type == 1 
 
+ovde postoji problem jer meni primenom ovog filtera pokazuje da je resnje 106 (a to nije resenje)  
 
+isti je problem kad apokusam preko analyze > display filter expression i odaberem filter za dns qry type  
 
+resenje je da se primeni i filter za flag response jer nam bez toga trazeni rezultat nije tacan  
 
+**resenje je:**  
 
+`dns.qry.type == 1 && dns.flags.response == 1`
+
+### napredni filteri  
+
+filter contains: http.server contains "Apache" - svi http paketi ciji server sadrzi odredjene reci    
+
+filter matches: http.host matches "\.(php|html)" - svi http paketi ciji hostovi sadrze .php ili .html  
+
+filter in: tcp.port in {80 443 8080} - svi tcp paketi ciji portovi sadrze odredjene vrednosti  
+
+filter upper: upper(http.server) contains "APACHE" - svu http paketi i njihovi serveri to uppercase koji sadrza odredjenu rec  
+
+filter lower: lower(http.server) contains "apache" - isto samo lowercase  
+
+filter string: string(frame.number) matches "[13579]$" - konveruj sve frame number u string vrednosti i navedi frejmove koji zavrsavaju neparnim vrenodstima  
+
+pored polja za unos filtera imamo dugme obelezivac da ih mozemo koristiti vise puta bez ponovnog kucanja, kad kliknemo na to dugme:
+save this filter > new display filter  
+
+wireshark profli sluze za pamcenje konfiguracija sto je kosirno za za svaki slucaj istrazivanja koji zahteva drugaciji skup pravila bojenja i dugmadi za filtriranje
+edit > configuration profiles > default na desni klik imamo switch to > pa nas novi default profil  
+
+**pronadji sve microsoft IIS servere. koji je broj pakete koji ne poticu sa porta 80**
+
+`http.server contains "IIS" && tcp.srcport != 80`  
+
+**sve microsoft iis servere ciji je broj paketa ima berziju 7.5**
+
+`http.server contains "Microsoft-IIS/7.5"`
+
+**ukupan broj paketak koji koriste portove 3333, 4444, 9999**
+
+`tcp.port in {3333 4444 9999}`
+
+**broj paketa koji je paran TLL**
+
+`string(ip.ttl) matches "[02468]$"`
+
+**promeni profil na checksum control, koji je broj bad tcp checksum paketa**
+
+edit > config profiles > checksum control profile, nakon toga otvorim analyze > display filter expression i kreiram filter pod TCP: tcp checksum status == bad
+kreirani filter izgleda ovako: `tcp.checksum.status == 0`
+
+Use the existing filtering button to filter the traffic. What is the number of displayed packets?
+
+**koristi postojece dugme za filtriranje saobracaja, koji je broj paketa sa tim filterom?**
+
+ovo dugme se nalazi odmah sa desne strane na kraju trake-prozora za kucanje filtera, kada se odabere checksum profile, klikom na to dugme treba da dobijemo predefinisani upit  
+
+`(http.response.code == 200 ) && (http.content_type matches "image(gif||jpeg)")`
 
 
