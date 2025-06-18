@@ -265,4 +265,90 @@ ovo dugme se nalazi odmah sa desne strane na kraju trake-prozora za kucanje filt
 
 `(http.response.code == 200 ) && (http.content_type matches "image(gif||jpeg)")`
 
+# Wireshark - traffic analysis  
+
+## nmap scans
+
+nmap skeniranje: skeniranje TCP konekcija, SYN i UDP  
+
+SYN, REST i ACK su nam flagovi koji nam opisuju proces rukovanja otvaranja i zatvaranja tcp portova  
+
+**tcp skeniranje: nmap -sT**  
+
+oslanja se na trosmerni hendshak-e, koriste ga neprivbilegovani korisnici (koji nisu root), obicno velicina veca od 1024 bajta jer zahtev ocekuje neke podatke  
+
+otvaranje tcp porta: syn - syn,ack - ack  
+otvaranje tcp porta: syn - syn,ack - ack - rest, ack  
+zatvorenui tcp port: syn - rst,ack  
+
+wireshark filter za sleniranje tcp connect-a: `tcp.flags.syn==1 and tcp.flags.ack==0 and tcp.window_size > 1024`
+  
+**tcp syn skeniranje: nmap -sS**  
+
+nema trosmerno rukovanje, koriste privilegovani useri, obicno je velicina manja ili jednaga 1024 bytes, ne ocekuje se prijem podataka  
+
+otvori tcp port: syn - syn,ack - rst  
+zatvori tcp port: syn - rst,ack  
+
+wireshark filter za prikaz TCP SYN skeniranja: `tcp.flags.syn==1 and tcp.flags.ack==0 and tcp.window_size <= 1024`  
+
+**udp scan: nmap -sU**
+
+ne oslanja se na trosmerno rukovanje, nema upit za otvorene portove, ICMP poruka o gresci za zatvaranje portova  
+
+otvaranje udp porta: udp paket  
+zatvaranje udp porta: udp paket-icmp type3, code 3 messsage (destination unreachable, port unreachable)  
+
+wireshark filter za udp obrasce skeniranja: `icmp.type==3 and icmp.code==3`  
+
+
+**koji je ukupni broj tcp connect skeniranja**
+
+u wireshark ubacimo trazeni fajl za vezbu...  
+
+primenimo filter za tcp: `tcp.flags.syn==1 and tcp.flags.ack==0 and tcp.window_size > 1024`  
+
+**koji je tip skeniranja koriscen da skenira tcp port 80**
+
+prvo primenimo filter: `tcp.port == 80`  
+
+tu vidimo sablone syn-syn,ack-rst,ack i taj sablon odgovara tcp connect skeniranju 
+
+**koji je broj poruka: zatvoren udp port**
+
+`icmp.type == 3 and icmp.code == 3`
+
+**koji udp port u opsegu 55-70 je otvoren**  
+
+`udp.dstport >= 55 and udp.port <= 70`
+
+kada primenimo ovaj filter videcemo skeniranja koja se vracaju sa unreachable portove, na jednog njih kliknemo i proverimo pod control message protokol koji je port u pitanju  
+
+posto imamo 3 poruke (icmp greske), kada istrazimo svaku dodjemo do toga da su zatvoreni portovi: 69, 57  
+
+onda je preostali port - 68 onaj koji nije vratio gresku. Ovo mozemo da vidimo i u prikazu nakon filtriranja. Skenirani portovi sa greskom su obojeni drugacije.  
+
+nase je samo da pretrazimo portove koji nisu vratili gresku a da su u opsegu 55-70  
+
+## arp poisoning (man in the middle)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
