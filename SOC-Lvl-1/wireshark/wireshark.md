@@ -332,10 +332,75 @@ nase je samo da pretrazimo portove koji nisu vratili gresku a da su u opsegu 55-
 
 ## arp poisoning (man in the middle)
 
+arp protokol: radi na lok mrezi, omogucava komunikaciju izmedju mac adresa, nije bezbedan protokol, nije protokol za rutiranje, nema funkciju autentifikacije, uobicajeni obrasci su zahtev odgovor najava i besplatni paketi  
+
+legitiman arp zahtev je kada proveravamo da li neki od dostupnih hostova koristi ip adresu i odgovor od hosta koji koristi odredjenu ip adresu  
+
+zahtev je u wiresharku prikazan sa reci who has [ip adresa], a odgovor je samo [adresa]
+
+wireshark filteri: 
+
+- `arp.opcode == 1` kod 1 arp zahtev  
+- `arp.opcode == 2` kod 2 arp odgovor  
+- `arp.dst.hw_mac==00:00:00:00:00:00` pretraga, arp skeniranje 
+- `arp.duplicate-address-detected or arp.duplicate-address-frame` moguce otkrivanje arp trovanja 
+- `((arp) && (arp.opcode == 1)) && (arp.src.hw_mac == target-mac-address)` moguce arp preplavljivanje zbog detekcije 
+
+sumnjiva situacija je kada postoji dva razlicita odgovora za odredjenu ip adresu. Medjutim pojavljuje se samo druga vrednost u odgovoru ip adrese   
+
+sumnjiva situacija je kada na arp zahtev dobijemo vise odgovora. Kada kliknemo na dogadjaj vidimo da imamo kod koji govori na dupliranu ip adresu  
+
+**koji je broj arp zahteva koje je napravio napadac**  
+
+ubacimo fajl u wireshark koji je za ovaj zadatak...  
+
+prvo kucamo pretragu skeniranja: `arp.dst.hw_mac==00:00:00:00:00:00`  
+
+kada nam ovo izbaci rezultate idemo desni klik na sumnjivu aktivnost i applay as filter > ...and selected. Sa ovim uzimamo mac adresu. Filter sada izgleda ovako `(arp.dst.hw_mac==00:00:00:00:00:00) && (eth.src == 00:0c:29:e2:18:b4)`    
+
+na kraj filtera dodajemo `&& (arp.opcode==1)` da bi smo istrazili samo arp zahteve umnjivog karaktera  
+
+konacan filter izgleda ovako: `(arp.dst.hw_mac==00:00:00:00:00:00) && (eth.src == 00:0c:29:e2:18:b4) && (arp.opcode==1)` i onda vidimo koji je ukupan broj zahteva   
+
+**koliki je broj http paketa koje je napadac primio**
+
+primenimo filter iz prethodnog zadatka. Odaberemo jedan dogadjaj i kliknemo na njega. Ona gledamo njegove detalje Ethernet > source > address i onda na to desni klik > apply as filter > selected  (samo selected ne ...and selected jer ce tad na postojeci upit dodati ovaj)  
+
+filter koji dobijemo sa ovim je: `eth.addr == 00:0c:29:e2:18:b4` i mi na njega rucno dodamo jos and http, tako da je konacni filter:  
+
+- `eth.addr == 00:0c:29:e2:18:b4 && http`
+
+**koliki je broj proverenih unosa username password**
+
+kada rasirimo wireshark prozor do kraja pod info (podaci nad kojim je primenjen poslednji http filter) gledam URI da nadjem neku formu.  
+
+kada sam nasao uri forme vidimo da se radio i POST zahtev. Kada pogledamo u detlajima (pod HTML form url encoded) vidimo uname i pass vrednosti koje su prosledjene  
+
+dalje trazimo pod hypertext transfer protocol > post /userinfo.php desni klik na ovo > apply as filter > ...and selected (da ga zalepi sa and na prethodni filter)  
+
+na kraju filter je: `(eth.addr == 00:0c:29:e2:18:b4 && http) && (frame[54:29] == 50:4f:53:54:20:2f:75:73:65:72:69:6e:66:6f:2e:70:68:70:20:48:54:54:50:2f:31:2e:31:0d:0a)`  
+
+ono sto dobijemo primenom filter pogledamo i vidimo u detalje da li negde ima prikazana lozinka. Negde ima negde ne, potrebno je rucno ici i brojati gde se pojavljuje lozinka da bi smo dali konacan broj
+
+**koja je lozinka od client986**
+
+znaci ostanemo na rezultatu iz prethodnog zadatak i pretrazujemo rucno da vidimo koja je lozinka od rezultata filtriranja. Lozinka se nalazi na poslednjoj stavci u detaljima html form url encoded  
+
+**koji je komentar od client354**
+
+> primenjen je filter iz proslog zadatka `(eth.addr == 00:0c:29:e2:18:b4 && http) && (frame[54:29] == 50:4f:53:54:20:2f:75:73:65:72:69:6e:66:6f:2e:70:68:70:20:48:54:54:50:2f:31:2e:31:0d:0a)`  
+
+obrisemo filter do ovog dela sve, znaci samo ovo ostane `(eth.addr == 00:0c:29:e2:18:b4 && http)`, nakon toga idemo na detalje (tamo gde smo gledali lozinku) i desni klik na html form url encoded apply as filte > and selected  
+
+konacan filter izgleda ovako: `((eth.addr == 00:0c:29:e2:18:b4 && http) ) && (urlencoded-form)`  
+
+- onda na dobijenim rezultatima idemo i gledamo za korisnika client354 trazimo komentar koji je ostavio u toj formi  
+
+## 
 
 
 
-
+ 
 
 
 
