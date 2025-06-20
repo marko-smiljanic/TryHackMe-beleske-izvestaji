@@ -470,6 +470,50 @@ primenimo filter i idemo u detlajie na: kerberos > cname > cname string
 
 `kerberos.CNameString contains "$"`
 
+## Tunneling traffic: DNS, ICMP  
+
+tunneling je zapravo preusmeravanje portova, bezbedan prenos podataka ka segmentima i zonama mreze. Spaja privatnu mrezu sa internetom i obrnuto  
+
+## icmp analiza  
+
+icmp je protokol za kontrolne poruke i dizajniran je za dijagnostifikovanjei prijavljivanje problema u mreznoj komunikaciji. Protokol je mreznog sloja i koristi ze za DoS napade i kradje podataka C2 tunelovanja  
+
+icmp napadi pocinju nakon izvrsavanja zlonamernog softvera ili iskoriscenja ranjivosti. icmp paketi mogu da prenesu dodatni teret podataka (napad na c2: http, tcp, ssh). Praksa je da se blokira koriscene ili da se zahtevaju administratorske privilegije za kreiranje perosnalizovanih icmp paketa  
+
+napad je tako sto se kreira paket koji odgovara redovnoj icmp velicini (64 bajta) tako da je ponekad tesko otkriti.  
+
+wireshark filter:
+
+- `icmp`
+- `data.len > 64 and icmp`
+
+## dns analiza  
+
+dns je zaduzen za konvertovanje ip adresa domena u ip adrese (iz logickih u fizicke). Posebno je ranjiv na izmene lokalnog dns fajla (kada poznate dns prevedene adrese ne zahteva od provajdera nego cita lokalno iz fajla kako bi ustedio operaciju) - **to sam radio na pentestingu**  
+
+isto kao icmp tunneling pocinju nakon izvrsavanja zlon. softvera ili iskoriscenja ranjivosti  
+
+napadaci nakon upada salju upite dns c2 serveru i onda izvrsavaju komande, zapravo sa nekog sajta koji izvrsava komande (jer su upiti duzi i kreirani za adrese poddomena)  
+
+kada se ovi upiti usmere ka c2 serveru on nazad vraca komande. Dns je prirodniji deo mrezne aktivnosti i postoji mogucnost da mrezni parametri ne otkriju ove pakete  
+
+wireshark: 
+
+- `dns`
+- `dns.contains "dsncat"` `dns.qry.name.len > 15 and !mdns` !mdns znaci onemoguci lok upite uredjaja za povezivanje 
+
+**istraziti anomalicne pakete, koji protokol je koriscen za icmp tunneling**
+
+izvrsimo komandu i pogledamo 
+
+`data.len > 64 and icmp`
+
+medjitum ovaj filter nije dovoljan zbog velikog broja rezultata pa treba jos dodati slucajeve  
+
+`(data.len > 64) and (icmp contains "ssh" or icmp contains "ftp" or icmp contains "tcp" or icmp contains "http")`
+
+kako znati koji je protokol? Tako sto jednostavno brisem slucajeve za ssh, ftp tcp i http. Za koji prikaze rezultat taj je protokol koriscen... malo je siledzijsko resenje, mogu se gledati bajtovi paketa i druge stvari ali je ovako lakse  
+
 
 
 
