@@ -398,6 +398,8 @@ konacan filter izgleda ovako: `((eth.addr == 00:0c:29:e2:18:b4 && http) ) && (ur
 
 ## identify host: DHCP, NetBIOS, Kerberos
 
+## DHCP
+
 u poslovnim mrezama se zna unapred odredjeni sablon identifikacije hostova (imena hostova)  
 
 dhcp je protokol za automatsko dodeljivanje ip adresa i drugih parametara komunikacije
@@ -408,8 +410,74 @@ wireshark filteri:
 - `dhcp.option.dhcp == 3` - zahtev, sadrzi informaciju o imenu hosta 
 - `dhcp.option.dhcp == 5` - ACK, prihvaceni zahtevi  
 - `dhcp.option.dhcp == 6` - NAK, odbijeni zahtevi 
-- `dhcp.option.hostname contains "keyword"`
-- `dhcp.option.domain_name contains "keyword"` 
+- `dhcp.option.hostname contains "keyword"` - zatev: imena hosta, ip adrese, zakup ip adrese, mac klijenta
+- `dhcp.option.domain_name contains "keyword"` - ack: ime domena i dodeljeno vreme zakupa
+- nak - preporuka da se cita umesto da se filtrira  (poruka detalji, razlog, odbijanja)
+
+## NetBIOS (NBNS)
+
+omogucava aplikacijama na razlicitim hostovima da medjusobno komuniciraju  
+
+wireshark filter: 
+
+- `nbns`
+- `nbns.name contains "keyword"`  
+
+## Kerberos 
+
+podrazumevan za auth microsoft windows domena. Autentifikacija 2 ili vise racunara preko nepouzdane mreze  
+
+wireshark filter:
+
+- `kerberos` 
+- `kerberos.CNameString contains "keyword"` `kerberos.CNameString and !(kerberos.CNameString contains "$")` username: vrednosti bez $ su korisnicka imena a kad primenimo $ onda dobijamo imena hostova  
+- `kerberos.pvno == 5` `kerberos.realm contains ".org"` `kerberos.SNameString == "krbtg"` ime domena za generisani tiket i client ip adresa. Informacije o adresam su samo u zahtevu paketa 
+
+**pronaci mac adresu hosta "Galaxy A30"**
+
+prvo u wureshark ubacimo trazeni fajl  
+
+primenimo ovaj filter i pod dhcp u detaljima nadjemo mac adresu
+
+`dhcp.option.hostname contains "A30"`
+
+**koliko netbios registracionih zahteva ima radna stanica "LIVALJM"**
+
+da bih sklopio filter moram da idem na analyze > display filter expression > nbns:
+
+- pod filter nbns.flags.opcode idem na == i na  registration i tako smo formirali jedan deo filtera 
+- onda opet pod nbns.name odaberemo matches i upisemo vrednost. Ova dva filtera spajamo sa and (&&)  
+
+`nbns.flags.opcode == 5 && nbns.name matches "LIVALJM"`
+
+**koji host je trazio (request) adresu 172.16.13.85**
+
+`dhcp.option.dhcp == 3 && dhcp.option.requested_ip_address == 172.16.13.85`
+
+i onda u detalje idem pod dhcp > option host name i nadjem 
+
+**koja je ip adresa usera u5 (defang format)**
+
+u wireshark ubacujemo drugi fajl  
+
+primenimo filter i pogledamo adresu u detaljima i vratimo kao defang (gde god su . pise se [.], uglavnom je ovako za ip adrese ali ima na CyberChef da se izgenerise)  
+
+`kerberos.CNameString contains "u5"`
+
+**koji hostname je dostupan host u kerberos paketima**
+
+primenimo filter i idemo u detlajie na: kerberos > cname > cname string
+
+`kerberos.CNameString contains "$"`
+
+
+
+
+
+
+
+
+
 
  
 
