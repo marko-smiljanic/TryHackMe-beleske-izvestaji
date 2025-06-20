@@ -504,7 +504,7 @@ wireshark:
 
 **istraziti anomalicne pakete, koji protokol je koriscen za icmp tunneling**
 
-izvrsimo komandu i pogledamo 
+u wireshark ubacimo odgovarajuci fajl, izvrsimo komandu i pogledamo 
 
 `data.len > 64 and icmp`
 
@@ -514,13 +514,31 @@ medjitum ovaj filter nije dovoljan zbog velikog broja rezultata pa treba jos dod
 
 kako znati koji je protokol? Tako sto jednostavno brisem slucajeve za ssh, ftp tcp i http. Za koji prikaze rezultat taj je protokol koriscen... malo je siledzijsko resenje, mogu se gledati bajtovi paketa i druge stvari ali je ovako lakse  
 
+**istraziti anomalicne pakete. koji je sumnjiva glavna domen adresa koja prima lose dns upite (adresa u defang format)?
+
+primenimo filter i gledamo sirove bajtove paketa da bi smo provalili koji je glavni domen, .com je dobar izbor jer trazimo top level domen, ali moze lako da bude nesto drugo    
+
+kada kliknemo na deo sirovih bajtova on nam u levom meniju detalja oznaci to mesto i onda vidimo gde i kako je sortirano i druge neke detalje  
+
+`dns.qry.name.len > 40 and !mdns && dns.qry.name contains ".com"`
 
 
+## analiza FTP  
 
+ftp je protokol koji je dizajniran za lak prenos fajlova, i zapravo je vise jednostavan nego bezbedan  
 
+wireshark filteri: 
 
+- `ftp`
+- 200 znaci da je komanda uspesna
+- `ftp.response.code == 211` x1x serija opcija: sistem, directory i file status 
+- `ftp.response.code == 227` x2x: servis spreman, ulazak u pasivni mod, dugacak i produzen pasivni mod
+- `ftp.request.command == "USER"` `ftp.request.command == "PASS"` `ftp.request.arg == "password"`
+- `ftp.response.code == 530` `(ftp.response.code == 530) and (ftp.response.arg contains "username")` `(ftp.request.command == "PASS" ) and (ftp.request.arg == "password")` bruteforce i password spray signali
 
+**koliko je pogresnih login-a**
 
+``
 
 
  
