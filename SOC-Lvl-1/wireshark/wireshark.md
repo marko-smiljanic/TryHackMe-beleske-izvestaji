@@ -396,9 +396,20 @@ konacan filter izgleda ovako: `((eth.addr == 00:0c:29:e2:18:b4 && http) ) && (ur
 
 - onda na dobijenim rezultatima idemo i gledamo za korisnika client354 trazimo komentar koji je ostavio u toj formi  
 
-## 
+## identify host: DHCP, NetBIOS, Kerberos
 
+u poslovnim mrezama se zna unapred odredjeni sablon identifikacije hostova (imena hostova)  
 
+dhcp je protokol za automatsko dodeljivanje ip adresa i drugih parametara komunikacije
+
+wireshark filteri: 
+
+- `dhcp` ili `bootp` 
+- `dhcp.option.dhcp == 3` - zahtev, sadrzi informaciju o imenu hosta 
+- `dhcp.option.dhcp == 5` - ACK, prihvaceni zahtevi  
+- `dhcp.option.dhcp == 6` - NAK, odbijeni zahtevi 
+- `dhcp.option.hostname contains "keyword"`
+- `dhcp.option.domain_name contains "keyword"` 
 
  
 
