@@ -1,4 +1,4 @@
-# TryHackMe - Beleške i Izveštaji
+# TryHackMe - Beleške i Izveštaji - Currently only in Serbian (because lack of time)
 
  Ovo je javni repozitorijum u kojem dokumentujem svoj napredak na platformi TryHackMe, gde učim i vežbam praktične veštine iz oblasti sajber bezbednosti.  
  
