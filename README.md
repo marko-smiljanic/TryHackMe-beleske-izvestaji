@@ -1,5 +1,7 @@
 # TryHackMe - Beleške i Izveštaji - Currently only in Serbian (because lack of time)
 
+Writing notes during solving rooms take me a lot of time. Because of that i need to focus on materials. After i finished SOC lvl 1, i will create new version in English.
+
  Ovo je javni repozitorijum u kojem dokumentujem svoj napredak na platformi TryHackMe, gde učim i vežbam praktične veštine iz oblasti sajber bezbednosti.  
  
  Ovaj repozitorijum služi kao podsetnik za najbitnije stvari koje sam uradio. **Fokus je na praktičnim zadacima i kako sam ih rešio**.  
