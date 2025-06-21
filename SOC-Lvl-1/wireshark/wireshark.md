@@ -673,7 +673,7 @@ defang i enkodovanje radim na cyber chef, ali defang mogu i rucno, umesto . stav
 
 ## analiza HTTPS  
 
-
+HTTPS koristi TLS protokol za zasticenu komunikaciju, vise je otporan na presretanje 
 
 
 
