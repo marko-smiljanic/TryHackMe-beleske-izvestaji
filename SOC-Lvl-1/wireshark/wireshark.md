@@ -673,12 +673,115 @@ defang i enkodovanje radim na cyber chef, ali defang mogu i rucno, umesto . stav
 
 ## analiza HTTPS  
 
-HTTPS koristi TLS protokol za zasticenu komunikaciju, vise je otporan na presretanje 
+HTTPS koristi TLS protokol za zasticenu komunikaciju, vise je otporan na presretanje. Nemoguce je pregledati prenete podatke bez parova kljuceva  
 
+wireshark filteri: 
 
+- `http.request`
+- `tls`  
+- `tls.handshake.type == 1` zahtev tls klijenta 
+- `tls.handshake.type == 2` odgovor tls servera 
+- `ssdp` mrezni protokol koji omogucavanja oglasavanje i otkrivanje mreznih usluga  
 
+- Hello klijentu: `(http.request or tls.handshake.type == 1) and !(ssdp)`
+- Hello serveru: `(http.request or tls.handshake.type == 2) and !(ssdp)`
 
+datotetka za sifrovanje kljuceva sadrzi jedinstvene parove kljuceva sifrovanog saobracaja. Kljucevi se automatski kreiraju po sesiji (tj. kada se uspostavi veza sa veb stranicom koja podrzava ssl/tls)  
 
+ovo se odvija u pregledacu i potrebno je konfigurisati sistem da bi smo ove vrednosti sacuvali u fajl.  
+
+da bi to uradili treba da podeismo promenljivu okruzenja i kreiramo SSLKEYLOGFILE, a pregledac ce kreirati kljuceve i zapisivati u ovaj fajl dok pregledamo web.  
+
+parovi kljuceva se kreiraju  po seseiji u vreme povezivanja tako da je vazno pisati kljuceve tokom snimanja saobracaja, u suprotnom nece biti moguce generisati datoteku.  
+
+menjanje podesavanja je na: `edit > preferences > protocols > tls` i mozemo da dodamo ili uklonimo fajl sa kljucevima (premaster secret lof filename)   
+
+- `http2`
+
+kada ukucamo ovaj filter u zavisnosti (da li imamo log fajl sa kljucevima) on ce pokazati podatke ili nece pokazati ako nemamo fajl sa kljucevima  
+
+prikaz podataka moze biti kao dektitovan ili kompresovan i na to treba obratiti paznju  
+
+**koji je frame nuber za klijent hello poruke poslate na accounts.google.com**
+
+primenim filter, pa pogledam u tls server name (mogu da nadjem kada kliknem na vrednost u sirovim bajtovima da ubrzam prikaz - kliknem na servername).  
+
+nakon primene filtera trazim frame nuber, odnosno redni broj paketa koji ima trazeni server name, znaci rucno moram pregledati sve pakete, sva sreca pa je ovaj trazeni accounts.google drugi po redu  
+
+filter pretrazuje zahteve poslate od klijenta ka serveru i moram oda izuzmemo mrezni protokol za otkrivanje mreznih usluga    
+
+`(http.request or tls.handshake.type == 1) and !(ssdp)`
+
+**desifruj saobracaj pomocu datog key log fajla. koji je broj http2 paketa**
+
+`edit > preferences > protocols > tls` prvo odemo ovde u na browse ubacimo prilozen fajl  
+
+nakon toga ukucamo https filter i izbrojimo koliko ima desifrovanih paketa
+
+`http2`  
+
+**idi na frame number 332. koje je zaglavlje autoriteta http2 paketa**
+
+ostavimo primenjen filter i rucno navigiramo na frame numb 332  
+
+`http2` 
+
+onda idemo na detalje pa na http2 > stream > header:authority  ... kopiram ga sa copy > description i prosledim u odgovor kao defang  
+
+**istraziti desifrovane pakete i pronaci flag**
+
+u napomeni stoji da uradim export object. To i uradim... 
+
+> podsetnik: `file > export object > http` i odaberem save all, i sacuvam na desktop. Fajl .ico ne mogu da otvorim ali ovaj drugi otvorim uz pomoc vlm i odmah vidim flag  
+
+## lov na kredencijale otvorenog teksta 
+
+u ovom slucaju nije lako uociti da li je bruteforce ili je korisnik pogresno ukucao svoje akreditive (jer je predstavljeno na nivou paketa i kredencijale vidimo kao listu)  
+
+wireshark ima opciju za pregled kredencijala: `tools > credentials` ova funkcija radi samo na verzijama wiresharka v3.1 +  
+
+ova funkcija radi samo na odredjenim protkolima i ne treba potpuno oslanjati na nju da bi smo proverili plain text u saobracaju  
+
+kada prikazemo listu kredencijala mozemo klikniuti na njih i videti detalje...  
+
+**koji broj paketa u kredencijalima korsiti http basic auth** 
+
+idmeo na tools > credentials i odmah tu kod http vidimo broj ukupnih paketa  
+
+**koji je broj paketa koji je pokusao login sa praznom lozinkom**
+
+ostanemo u prikazu kredencijala (tools > credentials za sve protokole) i tu klikcemo na broj paketa, a wireshark nas vodi na detalje  
+
+tu vidimo detalje za svaki paket koji odaberemo. Za lozinku su request command: PASS, a request arg je vrednost. Mi trazimo onaj bez vrednosti.  
+
+postoji drugo resenja da request command: PASS (iz detalja paketa) primenimo kao filter, i kada izvrsimo filter odmah ce nam se u tabeli pokazati prazno mesto za vrednost lozinke  
+
+## prakticni rezultati  
+
+wireshark moze da nam pomogne da kreiramo firewall pravila u nekoliko klikova. 
+
+odemo na `tools > firewall acl rules` otvara se novi prozor koji nam daje kombinaciju pravila zasnovanih na ip, portu i mac-u.  
+
+ova pravila se generisu za implementaiciju na spoljasnjem zidu firewalla 
+
+trenutno wireshark moze da kreira pravila za: 
+
+```
+Netfilter (iptables)
+Cisco IOS (standard/extended)
+IP Filter (ipfilter)
+IPFirewall (ipfw)
+Packet filter (pf)
+Windows Firewall (netsh new/old format)
+```
+
+**selektuj paket 99, napravi pravilo za ipfirewall (ipfw). koje je pravilo za odbijanje source ipv4 adrese**
+
+odemo na `tools > firewall acl rules` odaberemo dole pravila za ipfirewall (ipfw), oznacimo inbound i deny i prekopiramo pravilo koje odbija ipv4 source adresu  
+
+**selektuj paket 231, napravi pravilo za ipfirewall (ipfw). koje je pravilo za dozvoljavanje mac adrese odredista**
+
+isto odemo na `tools > firewall acl rules` odaberemo dole isto ipfirewall i iskljucimo deny opciju i kopiramo pravilo koje odgovara za allow mac destination address  
 
 
 
