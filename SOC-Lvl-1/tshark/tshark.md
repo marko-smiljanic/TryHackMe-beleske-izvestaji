@@ -21,3 +21,39 @@ sniffing je jedna od osnovne funkcionalnosti tshark-a. odredjeni interfejsi za s
 
 ako ne odaberemo ni jedan interfejs, podrazumevano se koristi prvi  
 
+ako navedemo `tshark -i 1` to znaci da nije odabran ni jedan interfejs  
+
+**koja je dostupna verzija tsharka na vm**
+
+izvrsimo komandu sa sudo za proveru verzije (-v)
+
+**koliko ima ukupno interfejsa dostupnih za tshark sniffing na vm**
+
+sa sudo izvrsimo komandu za pregled interfejsa (v)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
