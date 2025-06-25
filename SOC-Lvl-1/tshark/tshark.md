@@ -98,27 +98,19 @@ filteri za snimanje uzivo se podesavaju pre pocetka snimanja i ne mogu se menjat
 `-f` filteri za snimanje  
 `-Y` filteri za prikaz 
 
-capture filteri: 
-
-filteri za adresu i port:   
+tshark **CAPTURE** filteri: 
 
 - `tshark -f "host 10.10.10.10"` filtriranje hosta  
 - `tshark -f "net 10.10.10.0/24"` filtriranje mreznog opsega  
 - `tshark -f "port 80"` filtriranje porta   
 - `tshark -f "portrange 80-100"` filtriranje opsega portova  
-
-filteri za izvorne i odredisne adrese:  
-
 - `tshark -f "src host 10.10.10.10"` filtriranje izvorne adrese
 - `tshark -f "dst host 10.10.10.10"` filtriranje odredisne adrese 
-
-filtriranje po protokolu:  
-
-- `tshark -f "tcp"`
+- `tshark -f "tcp"` filtrira protokl 
 - `tshark -f "ether host F8:DB:C5:A2:5D:81"` filtriranje mac adrese 
 - `tshark -f "ip proto 1"` filtriranje ip protokola 1 (broj jedan je za icmp protokol - lista svih dodeljenih brojeva protokolima: https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml)   
 
-primer za simulaciju dogadjaja + filtriranje:  
+**primer za simulaciju dogadjaja + filtriranje:**  
 
 ovo se radi u terminator terminalima  
 
@@ -142,7 +134,7 @@ filtriranje protokla:
 `nc -u 10.10.10.10 4444 -vw 5` za udp
 `tshark -f "udp"`
 
-**zadaci se pokrecu u terminator terminalima**
+**sledeci zadaci se pokrecu u terminator terminalima**
 
 terminator terminal omogucava da imam vise podeljenih terminala u istom prozoru, olaksava rad na vise zadataka istovremeno, komanda za pokretanje je `terminator`    
 
@@ -154,20 +146,98 @@ prvo kucamo komandu za terminator:
 
 `terminator`
 
-`tshark -r demo.pcapng -Y “tcp.flags.syn == 1” | wc -l`
+u gornjem terminalu pokrecemo komandu `tshark -f "host 10.10.10.10" -w testfajl.pcap`   
+
+u donjem terminalu pokrecemo komandu `curl -v 10.10.10.10` ovu komandu pokrecemo dok se radi snimanje u gornjem  
+
+> Napomena: ove ip adrese stoje u primeru zadatka  
+
+sacekamo par sekundi i u gornjem terminalu zatvorimo snimanje (CTRL + c)   
+
+onda u primarnom terminalu (kada smo zatvorili terminatore) uradimo komandu da nas novokreirani .pcap fajl procitamo i izvucemo sta treba  
+
+`sudo tshark -r testfajl.pcap | grep "SYN"`
+
+druga komanda kojom gadjamo tcp.flags sa tshark filterom -Y:   
+
+`sudo tshark -r testfajl.pcap -Y "tcp.flags.syn == 1" | wc -l`
+
+**koji je broj pakete poslat na adresu: 10.10.10.10**
+
+koristimo isti onaj nas test fajl koji smo napravili u proslom zadatku uz pomoc simulacije skeniranja sa terminatorima  
+
+primenimo filter nad fajlom i onda izbrojimo koliko se puta destination ip adresa pojavljuje ova trazena. Mejutim resenje nije bas dobro jer moram da brojim i przim oci nad gomilom podataka    
+
+`sudo tshark -3 testfajl.pcap`
+
+opet forsiram primenu -Y tshark filtera da bih dobio gotovo resenje bes citanja celog pcap fajla  
+
+`sudo tshark -r testfajl.pcap -Y "ip.dst == 10.10.10.10" | wc -l`
+
+**koliki je broj paketa koji ima ACK bajtove**
+
+primenim filter i procitam broj  
+
+`sudo tshark -r testfajl.pcap -Y "tcp.flags.syn == 1" | wc -l`
+
+**OVAJ FITLER NE RADI, ODNOSNO ONAJ BROJ KOJI MI ON POKAZUJE NIJE RESENJE**
+
+zbog cega se to desilo ne znam, mozda moje snimanje saobracaja nije uradjeno isto kao sto su oni zamislili  
+
+zbog toga se cupam sa ovim drugim filterima i prebrojavam pojave ack-a:  
+
+`sudo tshark -r testfajl.pcap | grep "ACK"` 
+`sudo tshark -r testfajl.pcap -Y "tcp.flags.ack == 1"`
+
+kada primenim jedan od ova dva filtera vidim da ima viska rezultata odnosno izbrojani su ACK-ovi i sa nekih drugih mesta  
+
+mesto gde bi trebali da se gledaju ACK vrednosti su unutar zagrada [xxx, ACK]. ACK-ovi se pojavljuju i na drugim mestima koja daju visak rezultata. Treba pazljivo gledati gde je pronadjen ACK  
 
 
+tshark **DISPLAY** filteri (filteri za pcap fajlove, ne za uzivo snimanje): 
 
+u filtere se mora ubaciti i citanje fajla sa -r  
 
+- `tshark -Y 'ip.addr == 10.10.10.10'` filtrira ip adresu bez specificiranog smera   
+- `tshark -Y 'ip.addr == 10.10.10.0/24'` filtrira ceo opseg   
+- `tshark -Y 'ip.src == 10.10.10.10'` filtrira izvornu adresu    
+- `tshark -Y 'ip.dst == 10.10.10.10'` ili odredisnu    
+- `tshark -Y 'tcp.port == 80'` tcp port   
+- `tshark -Y 'tcp.srcport == 80'` tcp izvorni port   
+- `tshark -Y 'http'` sve http pakete   
+- `tshark -Y "http.response.code == 200"` trazi 200 ok odgovor servera  
+- `tshark -Y 'dns'` sve dns pakete  
+- `tshark -Y 'dns.qry.type == 1'` sve dns A pakete  
 
+## ova soba je trebala da se nalazi pre onog prethodnog zadatka jer su se tamo koristili ovakvi filteri a tek posle su objasnjeni  
 
+**koristi se demo.pcapng fajl za sledece zadatke**
 
+**koji je broj paketa sa 65.208.228.223 ip adresom**
 
+primenim filter i iscitam broj  
 
+`tshark -r demo.pcapng -Y 'ip.addr == 65.208.228.223' | wc -l`
 
+**koji je broj paketa sa tcp portom 3371**
 
+`tshark -r demo.pcapng -Y 'tcp.port == 3371' | wc -l`
 
+**koji je broj paketa sa adresom 145.254.160.237 kao izvornom**
 
+`tshark -r demo.pcapng -Y 'ip.src == 145.254.160.237' | wc -l`
+
+**pokrenuti prethodni upit i videti koji je output (novi upit nastaviti na prethodni). koji je broj dupliranih paketa**
+
+resenje ovoga sam nasao tako sto sam prvo otvorio ceo fajl da vidim sta bi mogao biti ispis za duplicate  
+
+`tshark -r demo.pcapng` 
+
+nakon ovoga sam video da je ispis koji odgovara [TCP, Dup, ACK, xxx]. znaci da treba da trazim Dup rec. Verovatno postoji tshark filter koji ovo nalazi ali ja ne mogu da ubodem koji je, jer mi ni jedan ne radi    
+
+`tshark -r demo.pcapng -Y 'ip.src == 145.254.160.237' | grep "Dup"` 
+
+filter sa `tcp.analysis.duplicate` meni ne radi !!
 
 
 
