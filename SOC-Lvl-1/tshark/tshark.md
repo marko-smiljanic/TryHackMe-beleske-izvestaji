@@ -239,8 +239,43 @@ nakon ovoga sam video da je ispis koji odgovara [TCP, Dup, ACK, xxx]. znaci da t
 
 filter sa `tcp.analysis.duplicate` meni ne radi !!
 
+# Statistika  
 
+`tshark --color` daje obojeni izlaz, slicno kao u wiresharku  
+`tshark -z help` statistika 
+`tshark -z filter` upotreba filtera 
+`-q` paremtar omogucava veci fokus na statistiku, tj. da se ne prikazuju i paketi  
 
+`-z io,phs -q` parametri koji omogucavaju hijerarhiju protokola   
+`tshark -r demo.pcapng -z io,phs,udp -q` primena filtera sa hijerarhijom protokola, ali se fokusiramo na udp   
+`-z plen,tree -q` statistika za prikaz duzine paketa   
+`-z endpoints,ip -q` statistika za endopointe (`eth, ip, ipv6, tcp, udp, wlan`)   
+`-z conv,ip -q` statistika za konverzaciju pregleda saobracaja izmedju dva endpointa  
+`-z expert -q` statistika za experts info (podsetnik: experts info smo koristili u wiresharku za pregled nekakvih alerta)  
+
+**koja je vrednost bajtova za tcp protokol**
+
+primenimo osnovni filter i pronadjemo vrednost za tcp protokol. Ovaj filter samo prikaze hijerarhiju u vidu stabla i informacije o frame i bajtovima  
+
+`tshark -r write-demo.pcap -z io,phs -q`
+
+**u kom redu duzine paketa je prikazan nas paket?**
+
+primenim filter i pogledam koji su opsezi duzine paketa i gde tacno upada nas paket od 62 bajta. Samo izvadim vrednost iz tabele za opseg velicina  
+
+`tshark -r write-demo.pcap -z plen,tree -q`
+
+**sta je summary od expert info-a**
+
+primenim filter i procitam summary tekst  
+
+`tshark -r write-demo.pcap -z expert -q`
+
+**koja ip adresa postoji u svim ipv4 konverzacijama, uneti u defang formatu** 
+
+primenim filter, pronadjem adresu i napisem defang format kao odgovor  
+
+`tshark -r write-demo.pcap -z expert -q`
 
 
 
