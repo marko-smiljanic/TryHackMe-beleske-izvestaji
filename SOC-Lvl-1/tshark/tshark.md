@@ -275,12 +275,92 @@ primenim filter i procitam summary tekst
 
 primenim filter, pronadjem adresu i napisem defang format kao odgovor  
 
-`tshark -r write-demo.pcap -z expert -q`
+`tshark -r write-demo.pcap -z conv,ip -q`
+
+# Statistika II  
+
+filtriranje hosta po ip i ipv6 protokolu:   
+
+- `-z ip_hosts,tree -q`
+- `-z ipv6_hosts,tree -q`
+
+sa ovim filterima mozemo da se fokusiramo na izvorisnu i odredisnu adresu:   
+
+- `-z ip_srcdst,tree -q`
+- `-z ipv6_srcdst,tree -q`
+
+ovi filteri su za ip i ipv6 sa fokusom na servise i portove  
+
+- `-z dests,tree -q`  
+- `-z ipv6_dests,tree -q`
+
+- `-z dns,tree -q` statistika o dns paketima  
+
+statistika za http:
+
+- `-z http,tree -q` brojac paketa i statusa za http  
+- `-z http2,tree -q` brojac paketa i statusa za https (http2)  
+- `-z http_srv,tree -q` raspored opterecenja  
+- `-z http_req,tree -q` zahtevi  
+- `-z http_seq,tree -q` odgovori   
+
+**koja ip adresa se pojavljuje 7 puta? upisati adresu u defang formatu**
+
+izvrsim komandu i odmah dobijem prikaz u tabeli za adrese   
+
+`tshark -r demo.pcapng -z ip_hosts,tree -q`
+
+**koji je procenat destination adrese od adrese iz proslog zadataka**
+
+ukucamo bilo koju od ove dve komande i vidimo procente. Sa prvom cemo dobiti prikaz i source adresa pa treba obratiti paznju na to  
+
+ovde sam imao opasan problem jer 20 minuta nisam mogao da ukucam pravo resenje jer na kraju resenja koje je 6.98 nisam stavio znak %. Na sve treba obracati paznju, bespotrebno    
+
+`tshark -r demo.pcapng -z ip_srcdst,tree -q`
+`tshark -r demo.pcapng -z dests,tree -q`
+
+**koja adresa sadrzi 2.33% u destination adresi? upisati defang format adrese**
+
+primenimo iste komande iz prethodnog zadatak samo citamo deruge vrednosti  
+
+**koji je prosek qname len vrednosti: hint traziti u dns statistici**
+
+primenimo komandu i iz tabelarnog prikaza izvuci vrednost iz kolone average - red qname len  
+
+`tshark -r demo.pcapng -z dns,tree -q`
+
+# Statistika III - strimovi, objekti i kredencijali  
+
+ima previse filtera namenjenih za razne svrhe. 
+
+> **NAPOMENA**: vecina ovih komandi su CLI verzije wireshark funkcija  
+
+follow stream komande (prate tokove saobracaja slicno kao wireshark):  
+
+```
+TCP Streams: -z follow,tcp,ascii,0 -q
+UDP Streams: -z follow,udp,ascii,0 -q
+HTTP Streams: -z follow,http,ascii,0 -q
+```
+
+- ovo je primer komandi. `-z follow` je glavni parametar,    
+- protokoli mogu biti (`http, tcp udp, http2`),  
+- prikaz kao `ascii, hex`, broj strima `0, 1, 2, ...`,    
+- dodatni parametar `-q`
 
 
+export object:  
 
+`--export-objects http,/home/ubuntu/Desktop/extracted-by-tshark -q`
 
+- `--export-objects` glavni parametar  
+- `dicom, http, imf, smb, tftp` protokoli  
+- putanja foldera gde se cuvaju fajlovi  
+- `-q` dodatni param  
 
+kredencijali:  
+
+`-z credentials -q`
 
 
 
