@@ -362,10 +362,30 @@ kredencijali:
 
 `-z credentials -q`
 
+**koristiti pilozeni fajl i pratiti udp stream 0. koja je vrednost node 0, rezultat zapisati u defang formatu**
 
+izvrsimo komandu i procitamo vrednosti za node 0 i uradimo defang (u defang za ovo idu samo . u [], : se ne stavlja u zagrade)  
 
+`tshark -r demo.pcapng -z follow,udp,ascii,0 -q`
 
+**pratiti http stream 1, koja je referer vredmpst, zapisati kao defang**
 
+izvrsimo komandu i posto je url u pitanju u odgovoru koristim cyber chef za defang jer ne znam kako se rucno radi defang url-a  
 
+`tshark -r demo.pcapng -z follow,http,ascii,1 -q`
+
+**koristiti prilozeni fajl i videti koji je ukupni broj detektovanih kredencijala**
+
+izvrsim komandu i dobijem izlistane sve kredencijale, ali ne mogu da ih izbrojim sa `| wc -l` broj dobijen sa ovim nije tacan odgovor...   
+
+zbog toga sam kopirao ceo output sa kredencijalima u tekst editor koji broji redove (u mom slucaju notepad++) i video koliko ih ima  
+
+ovo je resenje koje je siledzijsko jer sam video tek posle hint za zadatak da se doda `| nl` i da se numerisu redovi u prikazu   
+
+kada sam ovo izvrsio video sam da su prva 3 reda neka nebitna koja nisu kredencijali a `| wc -l` ih je brojao i zbog toga nije tacan rezultat bio  
+
+`tshark -r credentials.pcap -z credentials -q | nl`
+
+kada izvrsimo komandu vidimo detalje vezane za kredencijale kao sto su username i iz kojeg su paketa izvuceni i korisceni protokol (uglavnom FTP)  
 
 
