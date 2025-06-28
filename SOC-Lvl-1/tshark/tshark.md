@@ -388,4 +388,122 @@ kada sam ovo izvrsio video sam da su prva 3 reda neka nebitna koja nisu kredenci
 
 kada izvrsimo komandu vidimo detalje vezane za kredencijale kao sto su username i iz kojeg su paketa izvuceni i korisceni protokol (uglavnom FTP)  
 
+# Napredne opcije filtriranja  
+
+slicno kao i u wiresharku   
+
+> napomena: contains i matches se ne mogu koristiti sa poljima koja se sastoje od integer vrednosti, koriscenje hex i regex vrednosti umesto ascii imaju bolju sansu poklapanja  
+
+`contains` case sensitive, pretrazuje vrednosti unutar paketa, slicno kao wireshark find  
+
+- primer: prikazi sve apache servere  
+- pisanje filtera: izlistaj sve http pakete gde server fild sadrzi apache keyword  
+- primer primene jednog filtera: `http.server contains "Apache"`
+
+`matches` case insensitive, podrzava regex, pretrazuje sablone unutar paketa, kompleksni upiti mogu sadrzati gresku  
+
+- primer: prikazi sve .php i .html stranice
+- pisanje: izlistaj sve http pakete gde se kao request method field podudara sa get ili post  
+- primer primene jednog filtera: `http.request.method matches "(GET|POST)"`
+
+extract fields: 
+
+`-T fields -e ip.src -e ip.dst -E header=y` 
+
+- `-T fields` kljucna rec  
+- `-e <field name>` koji field gadjamo  
+- `-E header=y` prikazi field name   
+
+primer primene filtera: `tshark -r demo.pcapng -T fields -e ip.src -e ip.dst -E header=y -c 5` moze i sa vise izdvojenih fieldova  
+
+mozemo kombinovati razlicite filtere:   
+
+`tshark -r demo.pcapng -Y 'http.server contains "Apache"' -T fields -e ip.src -e ip.dst -e http.server -E header=y`
+
+`tshark -r demo.pcapng -Y 'http.request.method matches "(GET|POST)"'`
+
+`tshark -r demo.pcapng -Y 'http.request.method matches "(GET|POST)"' -T fields -e ip.src -e ip.dst -e http.request.method -E header=y`
+
+**koristiti prilozeni fajl. koji je broj http paketa koji sadrzi keyword "CAFE"**
+
+primenim ovaj filter i vidim sve informacije o paketu koje mi je prikazao  
+
+`tshark -r demo.pcapng -Y 'http contains "CAFE"'`
+
+**filtriraj sve get i post requestove i izvuci packet frame time, koja je prva time vrednost pronadjena**
+
+hint je da se koristi matches i da ovo moze pomoci `-T fields -e frame.time`, ovo je ok sto su dali jer bih inace morao traziti kako se zove field za frame time  
+
+izvrsim ovu komandu i procitam prvu prikazanu vrednost. Obratiti paznju za pisanje ne mogu ova dva spajati sa and jer nije isti tip filtera    
+
+`tshark -r demo.pcapng -T fields -e frame.time -Y 'http.request.method matches "(GET|POST)"'`
+
+# Use cases  
+
+slucajevi koriscenja **koji su najcesce upotrebljavani** kako bi pronasao lako dostupne reultate nakon pregleda statistike i kreiranja plana istrage  
+
+1. **izdvanjanje hostnames-a:**  
+
+izdvanjanje hostname-a iz dhcp paketa. 
+
+`tshark -r hostnames.pcapng -T fields -e dhcp.option.hostname`
+
+izlaz iz ovoga je tesko upravljati kada postoji vise duplih vrednosti, zbog toga je nekad potrebno dodati druge linux komande za upravaljanje i organizovanje cmd-a  
+ | 
+primer: `| awk NF | sort -r | uniq -c | sort -r`  
+
+awk uklanja prazne redove,  
+sort -r sortira rekurzivno pre obrade vrednosti,  
+uniq -c prikazati uniq vrednosti i broj pojavljivanja,  
+i na kraju konacni sort za sve  
+
+2. **Izdvanjanje DNS upita** 
+
+`tshark -r dns-queries.pcap -T fields -e dns.qry.name | awk NF | sort -r | uniq -c | sort -r`
+
+izdvajanje user agent-a:  `tshark -r user-agents.pcap -T fields -e http.user_agent | awk NF | sort -r | uniq -c | sort -r`  
+
+**koristiti odgovarajuci fajl, videti koliko ukupno ima jedinstvenih hostna-eova (koliko razlicitih)**
+
+izvrsim uput i vidim broj, da bih dobio broj izbrojanih svih redova izvucenih iz prethodne komande, mogu rucno da izbrojim u terminalu ili da dodam `wc -l`  
+
+`tshark -r hostnames.pcapng -T fields -e dhcp.option.hostname | awk NF | sort -r | uniq -c | sort -r | wc -l`
+
+**koje je ukupno pojavljivanje prus-pc hostname-a**
+
+ista komanda kao malo pre samo sklonim `wc -l` da bih video koliko se koji hostname pojavljuje  
+
+`tshark -r hostnames.pcapng -T fields -e dhcp.option.hostname | awk NF | sort -r | uniq -c | sort -r`
+
+ili mogu samo `tshark -r hostnames.pcapng -T fields -e dhcp.option.hostname| grep -c "prus-pc"`
+
+**uzeti odg fajl, koji je ukupan broj query-ja najcesceg dns upita**
+
+izvrsim komandu i pogledam prvog jer je sortirano rekurzivno  
+
+`tshark -r dns-queries.pcap -T fields -e dns.qry.name | awk NF | sort -r | uniq -c | sort -r`
+
+**koristiti odgovarajuci fajl, koji je ukupni broj detektovanih Wfuzz user agents-a**
+
+izvrsim komandu i pogledam i saberem sve pojave wfuzz ua  
+
+`tshark -r user-agents.pcap -T fields -e http.user_agent | awk NF | sort -r | uniq -c | sort -r`
+
+moze i ovako da odmah dobijem odgovor: `tshark -r user-agents.pcap -Y 'http.user_agent contains "Wfuzz"' | wc -l`
+
+ali ja ovako ne bih pretrazivao jer moze biti case sensitive i da mi ga ne ispise ako je nazvan drugacije  
+
+**koji je http hostname za nmap scans, odgovor u defang formatu**
+
+posto ne kaze za koji fajl pretpostavicemo da je isti kao za prethodni zadatak  
+
+hint: Enhance the query by adding the "HTTP hostname" information with the "http.host" option.
+
+izvrsim komandu i vidim koji se najcesce pojavljuje  
+
+`tshark -r user-agents.pcap -Y "http.host" -T fields -e http.host` filtriram samo http host header-e i izdvajam samo hostname  
+
+
+
+
 
