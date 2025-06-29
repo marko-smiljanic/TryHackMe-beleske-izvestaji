@@ -449,7 +449,7 @@ izdvanjanje hostname-a iz dhcp paketa.
 `tshark -r hostnames.pcapng -T fields -e dhcp.option.hostname`
 
 izlaz iz ovoga je tesko upravljati kada postoji vise duplih vrednosti, zbog toga je nekad potrebno dodati druge linux komande za upravaljanje i organizovanje cmd-a  
- | 
+
 primer: `| awk NF | sort -r | uniq -c | sort -r`  
 
 awk uklanja prazne redove,  
@@ -563,22 +563,67 @@ defang adrese ide ovako:
 
 johnny5alive[at]gmail[.]com - umesto @ ide [at]
 
+# TShark zadatak II: Directory  
+
+**istraziti dns upite, istraziti sumnjivi domen sa virus total i napisati koji je maliciozni domen u defang formatu**
+
+primenim komandu i istrazim domene na virus total, odmah uocavam sumnjivi domen  
+
+`tshark -r directory-curiosity.pcap -Y 'dns.qry.type == 1'` na ovo sam mogao dodati i `-T fields -e dns.qry.name` 
 
 
+**koji je broj http zahteva poslatih na maliciozni domen**
 
+izvrsim filter za pronalazak hosta i izdvajanje http paketa  
 
+`tshark -r directory-curiosity.pcap -Y 'http.host == "jx2-bavuong.com"' -T fields -e http.host | wc -l`
 
+**koja je ip adresa povezana sa malicioznim domenom**
 
+ovo ne trazim na virus total > relations, nego kada izvrsim prethodni upit dobijem dns A zapis i vidim na kraju reda koja je adresa domena  
 
+**koji je server info sumnjivog domena**
 
+primenim komandu i vidim ispis, koji je malo nestrukturian  
 
+`tshark -r directory-curiosity.pcap -T fields -e http.server`
 
+na ovo mogu dodati `| awk NF | sort -r | uniq -c | sort -r` i tada cu dobiti pregledniji rezultat sa izbrojanim ponavljanjima  
 
+**prati prvi tcp stream (u ascii), koji je broj izlistanih fajlova**
 
+kada ovo izvrsim dobijem prikaz malo neuredan, ali trazim .php i .exe fajlove  
 
+prvi strim je 0, jer brojanje pocinje od 0
 
+`tshark -r directory-curiosity.pcap -z follow,tcp,ascii,0 -q`
 
+**koje je ime prvog fajla, defang**
 
+ovo se nadovezuje sa prethodnim zadatkom, pogledam koji je prvi po redu i upisem kao defang  
 
+**exportovati sve http objekte, koje je ime skinuitog exe fajla, defang**
 
+za ovo ne moram izvrsiti upit mogu na poslednjem strimu da vidim da je to vlauto.exe, ali uradicu kako zadatak kaze  
 
+`tshark -r directory-curiosity.pcap --export-objects http,/home/ubuntu/Desktop/izvadjeni-objekti -q`
+
+kada ovo izvrsimo vidimo da je izvucen vlauto.exe i vlauto(1).exe  
+
+**koja je hes vrednost sha256 malicioznog fajla**
+
+kroz terminal odem u folder gde sam izvadio objekte i uradim komandu  
+
+`sha256sum vlauto.exe`
+
+kada pretrazimo na virus total hes vrednost vidimo da je trojancina sa mnogo alerta  
+
+**pretrazi sha256 hes na virus total i videti koja je PEiD packer vrednost**
+
+virus total > details > basic properties  
+
+**pretraziti virustotal i naci koja je lastline sandbox vrednost**
+
+virus total > behaviour > dynamic analysis sandbox detections  
+
+ 
