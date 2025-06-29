@@ -168,7 +168,7 @@ koristimo isti onaj nas test fajl koji smo napravili u proslom zadatku uz pomoc 
 
 primenimo filter nad fajlom i onda izbrojimo koliko se puta destination ip adresa pojavljuje ova trazena. Mejutim resenje nije bas dobro jer moram da brojim i przim oci nad gomilom podataka    
 
-`sudo tshark -3 testfajl.pcap`
+`sudo tshark -r testfajl.pcap`
 
 opet forsiram primenu -Y tshark filtera da bih dobio gotovo resenje bes citanja celog pcap fajla  
 
@@ -502,6 +502,81 @@ hint: Enhance the query by adding the "HTTP hostname" information with the "http
 izvrsim komandu i vidim koji se najcesce pojavljuje  
 
 `tshark -r user-agents.pcap -Y "http.host" -T fields -e http.host` filtriram samo http host header-e i izdvajam samo hostname  
+
+# TShark zadatak - Teamwork  
+
+> **NAPOMENA**: datoteke sa vezbi sadrze stvarne primere, ne treba imati interakciju sa njima van virt. masine. Datoteke, domeni, ip adrese mogu naskoditi nasoj masini  
+
+Tim za pronalazak pretnji je otkrio sumnjivi domen koji moze naskoditi organizaciji.  
+
+Slucaj je dodeljen nama, treba da istrazimo teamwork.pcap u excercise-files  
+
+Alati za koriscenje: TShark i virus total  
+
+**istraziti kontaktirane domene, istraziti te domene sa virus total, koji od njih je oznacen kao maliciozni, napisati u defang formatu**
+
+prvo sto mi je palo na pamet da uradim da pretrazim sve dns pakete  
+
+`tshark -r teamwork.pcap -Y 'dns.qry.type == 1'`
+
+i tu ne vidimo puno razlicitih domena, i odmah mi jedan upada u oci: www[.]paypal[.]com4uswebappsresetaccountrecovery[.]timeseaways[.]com   
+
+kada ga istrazim na virus total vidim da ima alerta da se koristio za phising  
+
+moglo je i ovako da se uradi: `tshark -r teamwork.pcap -T fields -e http.host | sort -r | uniq`
+
+**koja je url adresa sumnjivog domena prvi put poslata virust total-u**
+
+za ovo moram da pretrazujem u virus total domen otkriven u prethodnom zadatku i da vidim u istoriji  
+
+nasao sam datum ali u zadatku moram da upisem u specificnom formatu sa satima minutima i sekundama, a to nema na virus total pa sam morao da guglam da se snalazim   
+
+**koju poznatu uslugu je domen pokusao da oponasa**
+
+to vidimo iz url-a odmah: paypal  
+
+**koja je ip adresa malicioznog domena, defang**
+
+tu je prednost one komande koju sam primenio u terminalu (da prikazem sve dns A zapise: [URL] A [ip addr]), i tu na kraju vidim koja je adresa  
+
+**koja je email adresa koja je koriscenka, i defang formatu - (format: aaa[at]bbb[.]ccc)**
+
+`tshark -r teamwork.pcap -Y 'frame contains "@"' -x` - ovo moje je malo siledzijsko resenje gde gledam sadrzaj paketa u ascii formatu i trazim adresu, ali je previse ima informacija, a ako dodam -V tek onda ima gomila teksta     
+
+posto nisam siguran koji je protokol koriscen za mej (smtp i imf mi ne daju rezultate), trazim kroz sirove bajtove paketa pattern za mejl adresu  
+
+Kada ne znam kako da izvedem pretragu uvek imam sirove bajtove. Na netu pronadjem regex i grepujem ga na prikaz `-V` koji daje detalje paketa u citljivom formatu    
+
+`tshark -r teamwork.pcap -V | grep -Eo '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'`  
+
+kada ovo izvrsim vidim adresu. `-E` koriscenje regex-a, `-o` da izbaci samo stvari koje su se poklopile a ne cele linije    
+
+ako sklonimo `-o` onda nam izbaci cele linije i tu vidimo da se ovo moglo pronaci pod grep "user", znaci : `tshark -r teamwork.pcap -V | grep "user"`, jer je ovaj mejl izgleda iz neke forme  
+
+a moze se pronaci i ovako: `tshark -r teamwork.pcap -V | grep "@"`, tada isto dobijemo gomilu podataka ali lakse proletimo kroz njih, jer nam izdvoji sva poklapanja  
+
+imam osecaj da se ovo moglo dosta lakse uraditi ali ne znam kako bi moglo, jednostavno preko protokola ne mogu da dodjem do mejl adrese  
+
+pokusao sam i sa extract object ali dobijem brdo nekih stvari za koje opet treba rucna pretraga  
+
+defang adrese ide ovako: 
+
+johnny5alive[at]gmail[.]com - umesto @ ide [at]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
