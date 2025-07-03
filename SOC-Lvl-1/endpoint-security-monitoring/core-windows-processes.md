@@ -31,9 +31,43 @@ neobicno ponasanje za system proces:
 - drugaciji PID broj (uvek mora biti 4 za system proces) 
 - nepokretanje iz sesije 0  
 
+# System > smss.exe 
 
+session manager subsystem (windows session manager), odgovoran je za kreiranje novih sesija. Prvi proces korisicnog rezima koji pokrece jezgro  
 
+sta je sumnjivo:  
 
+- drugaciji roditeljski proces osim system (4)
+- putanja slike nije na c/windows/system32  
+- vise od jednog procesa koji se pokrece (child se sami zavrsavaju i izlaze nakon nove sesije)  
+- korisnik koji radi nije korisnik sistema  
+- neocekivani unosi u registar za podsistem  
+
+# csrss.exe  
+
+client server runtime process  
+
+ovaj proces je kljucan za rad sistema  
+
+sta je neobicno ponasanje:  
+
+- pravi parent proces (smss.exe poziva ovaj proces i samostalno se izvrsava)  
+- putanja datoteke slike koja nije c/windows/system32  
+- suptilne pravopisne greske za skrivanje laznih procesa maskiranih kao csrss.exe  
+- korisnik nije koristik sistema   
+
+# wininit.exe  
+
+services.exe - service control manager
+Isass.exe - moramo ukljuciti credential and key guard i samo tada cemo videti ovaj proces, local security authority  
+
+sta nije normalno:  
+
+- pravi roditeljski proces (smss.exe poziva ovaj proces i samostalno se izvrsava)  
+- putanja datoteke slike koja nije c/windows/system32  
+- suptilne pravopisne greske radi skrivanja laznih procesa  
+- vise pokrenutih instanci  
+- ne radi kao sistem  
 
 
 
