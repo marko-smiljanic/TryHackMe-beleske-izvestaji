@@ -78,7 +78,33 @@ prvo kucam informacije da vidim kako se koristi komanda `wevtutil el /?`
 
 onda kucam `wevtutil el | Measure-Object` i dobijem resenje  
 
+**koji event fajlovi ce biti procitani kada se koristi query-event komanda**
 
+resenje ovog zadatka je teorijsko, znaci treba ukucati `wevtutil qe /?` i videti prvu recenicu ispod o informacijama koje fajlove cita  
+
+**koja opcija bi se koristila kao putanja za logfile**
+
+primenimo istu komandu i nakeako zakljucimo ovu nelogicnost koju pita, jer nije bas ocigledan odgovor iz teksta  
+
+**koja je vrednost za /q**
+
+primenimo istu komandu i trazimo q i nadjemo sta je value    
+
+**HINT: sledeci zadatak je baziran na komdani:**`wevtutil qe Application /c:3 /rd:true /f:text`
+
+**koji je logname**
+
+primenimo komandu i jednostavno procitamo  
+
+**sa je /rd opcija**
+
+ovde koristimo komdnau `wevtutil qe /?` i pronadjemo opciju i vidimo za sta je  
+
+**za sta je /c**
+
+isto kao prosli z, ista komanda samo trazimo drugu stavku    
+
+****
 
  
  
