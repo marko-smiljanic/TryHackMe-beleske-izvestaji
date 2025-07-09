@@ -34,13 +34,35 @@ tipovi event logova su:
 - success audit - pokusaj login-a koji je uspesan  
 - failure audit - neuspesan pokusaj login-a  
 
-# Event viewer  
+# Event view-er  
 
 jedan od nacina za pristup windows logovima  
 
+**koji je id eventa za najraniji snimljeni dogadjaj**
 
+prvo u stablu sa desne strane otvorimo kroz foldere: application and service logs > microsoft > windows > powershell > operational i to otvorimo   
 
+sortiramo prikaz logova po datumu i pogledmo koji je  
 
+vm jako baguje i cak sortiranje traje 2-3 minuta  
+
+**filtriraj dogadjaj id 4104, koja je druga komanda koja je izvrsena u powershell sesiji**
+
+u prikazu sa desne strane u tabu actions > filter current log > i u mestu za id ukucam i pokrenem  
+
+sortiram po datumu i kliknem na drugi po redu i pogledam koja je komanda u pitanju  
+
+**koja je task category za event id 4104**
+
+to vidim odmah u prikazu u glavnoj tabeli  
+
+**analiziraj windows powershell logove, koji je task category za event id 800**
+
+za ovo moram promeniti prikaz u glavnom stablu, idem na:  service logs > microsoft > openSSH > windows powershell i to otvorimo  
+
+kada otvorimo dobar fajl onda pregledamo podatke bez posebih sortiranja jer treba samo task category  
+
+# waweutils.exe 
 
 
 
