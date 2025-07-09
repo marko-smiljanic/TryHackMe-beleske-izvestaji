@@ -158,18 +158,81 @@ proveriti online dokumentaciju za ovo
 
 sluzi za adresiranje delova xml dokumenata i manipulisanje stringovima  
 
+- `XPath Query: *[System[(Level <= 3) and TimeCreated[timediff(@SystemTime) <= 86400000]]]` bira sve dogadjaje iz kanala ili event dnevnika gde je nivo ozbiljnosti manji ili jednak 3 i dogadjaj se desio u poslednja 24h  
 
+https://learn.microsoft.com/en-us/windows/win32/wes/consuming-events#xpath-10-limitations  
 
+primer raznih upita:  
 
+- `Get-WinEvent -LogName Application -FilterXPath '*/System/'`
+- `Get-WinEvent -LogName Application -FilterXPath '*/System/EventID=100'` id dogadjaja je 100  
+- `wevtutil.exe qe Application /q:*/System[EventID=100] /f:text /c:1` 
+- `Get-WinEvent -LogName Application -FilterXPath '*/System/Provider[@Name="WLMS"]'` 
+- `Get-WinEvent -LogName Application -FilterXPath '*/System/EventID=101 and */System/Provider[@Name="WLMS"]'`
 
+event data ne sadrzi uvek informacije  
 
+gledamo xml prikaz dogadjaja za pravljenje upita  
 
+- `Get-WinEvent -LogName Security -FilterXPath '*/EventData/Data[@Name="TargetUserName"]="System"' -MaxEvents 1`
 
+**koristeci znanje get win event i xpath koji je query da se nadje wlms event sa System Time of 2020-12-15T01:09:08.940277500Z**
 
+`Get-WinEvent -LogName Application -FilterXPath "*[System/Provider[@Name='WLMS'] and System/TimeCreated[@SystemTime='2020-12-15T01:09:08.940277500Z']]"`
 
+mora da se formatira pravilno, nece da prizna odgovoro, jer sto ne bi smo gubili malo vreme na gluposti  
 
+`Get-WinEvent -LogName Application -FilterXPath '*/System/Provider[@Name="WLMS"] and */System/TimeCreated[@SystemTime="2020-12-15T01:09:08.940277500Z"]'`  
 
+**koristiti get winevent i xpath, koji je query koji trazi usera koji se zove Sam sa Logon Event ID 4720**
 
+`Get-WinEvent -LogName Security -FilterXPath "*[EventData/Data[@Name='TargetUserName']='Sam' and System/EventID=4720]"`
+
+opet format: `Get-WinEvent -LogName Security -FilterXPath '*/EventData/Data[@Name="TargetUserName"]="Sam" and */System/EventID=4720'`
+
+**koliko rezultata je vratio prethodni query**
+
+izvrsi se i vidi se 2 kom 
+
+**koja je poruka koja se vidi kada se izvrsi prethodni upit**
+
+A user account was created
+
+**opet prethodni upit sa Sam korisnikom, u koje vreme je zabelezen doagadjaj sa id 4724 (MM/DD/YYYY H:MM:SS [AM/PM])**
+
+takvog id-ja nema, ima samo 4720 2 komada, ne znam da li ja nisam dobio resenje ili je greska na TryHackMe platformi, ali svakako je naporno  
+
+**u rezultatu pretohnodg upuita, koji je provider name**
+
+izvrsim i vidim odmah  
+
+# Event IDs  
+
+id-evi se mogu naci na razlicitm sajtovima    
+
+mitre attack: svaki moze sadrzati odeljak sa savetima za ublazavanje tehnike i savetima za otkrivanje    
+
+mora se omoguciti funkcija: Local Computer Policy > Computer Configuration > Administrative Templates > Windows Components > Windows PowerShell   
+
+omoguciti: Local Computer Policy > Computer Configuration > Administrative Templates > System > Audit Process Creation, ovo ce generisati dogadjaj sa id-em 4688 
+
+# Zadaci  
+
+sledeci zadaci se zasnivaju na fajlu na desktopu  
+
+koristiti bilo koji od alata da se odgovori na pitanja u nastavku  
+
+scenario 1 (pitanje 1 i 2): administratori servera su ulozili brojne zalbe menadzmentu u vezi sa blokiranje powershell-a u okruzenju, menadzment je konacno odobrio upotrebu powershella u okruzenju. Sada je potrebna vidljivost kako bi se osiguralo da nema praznina u pokrivenosti. 
+
+> Istražili ste ovu temu: koje logove pregledati, koje ID-ove događaja pratiti itd. Omogućili ste PowerShell zapisivanje na testnoj mašini i zamolili kolegu da izvrši različite naredbe.  
+
+scenario 2 (pitanje 3 i 4): tim za bezbednost vise koristi event logove. Zele da osiguraju da mogu da prate da li se evidencija dogadjaja brise. Dodelili ste kolegi da izvrsi ovu radnju  
+
+scenario 3 (pitanja 5, 6, 7): tim za pretnje je podelio svoje istrazivanje o emotetu. Savetovali su da se potrazi id dogadjaja 4104 i tekst "ScriptBlockText" unutar elementa event data. Pronadjite kodirani powershell korisni payload  
+
+scenario 4 (pitanja 8 i 9): stigla je prijava da je pripravnica osumnjicena da je pokrenula neobicne komande na svojoj masini, kao sto je nabrajanje clanova grupe administratora. Visi analiticar je predlozio pretragu C:\Windows\System32\net1.exe. Potvrdite sumnju.  
+
+**1. **
 
 
 
