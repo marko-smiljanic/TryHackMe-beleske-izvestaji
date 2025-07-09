@@ -62,11 +62,22 @@ za ovo moram promeniti prikaz u glavnom stablu, idem na:  service logs > microso
 
 kada otvorimo dobar fajl onda pregledamo podatke bez posebih sortiranja jer treba samo task category  
 
-# waweutils.exe 
+# wevtutil.exe 
 
+tesko je pregledati logove rucno. Logovi se mogu pregledati i pisanjem skripti  
 
+u powershellu koristimo komandu `wevtutil.exe /?` da pregledamo mogucnosti i informacije alata  
 
-  
+ako npr hocemo da koristimo komandu `qe` koristimo isti nacin za dobavljanje informacija o njenom koriscenju: `wevtutil qe /?`  
+
+**koliko je log name u masini?**
+
+hint: koristimo el komandu    
+
+prvo kucam informacije da vidim kako se koristi komanda `wevtutil el /?`
+
+onda kucam `wevtutil el | Measure-Object` i dobijem resenje  
+
 
 
  
