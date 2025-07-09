@@ -104,7 +104,79 @@ ovde koristimo komdnau `wevtutil qe /?` i pronadjemo opciju i vidimo za sta je
 
 isto kao prosli z, ista komanda samo trazimo drugu stavku    
 
-****
+# get-winEvent  
+
+preuzima logove i datoteke na lokalnim i udaljenim racnunarima  
+
+> **NAPOMENA:** komanda `GetWinEvent` je zamenjena sa `Get-EventLog`
+
+- `Get-WinEvent -ListLog *` dobavljanje lokalno svih dnevnika dogadjaja  
+- `Get-WinEvent -ListProvider *` preuzimanje dobaljvaca log dnevnika i eventa  
+- `Get-WinEvent -LogName Application | Where-Object { $_.ProviderName -Match 'WLMS' }` filtriranje logova  
+- komanda za filtriranje  
+```
+Get-WinEvent -FilterHashtable @{
+  LogName='Application' 
+  ProviderName='WLMS' 
+}
+   
+```
+- `@{ <name> = <value>; [<name> = <value> ] ...}` sintaksa hes tabele  
+- `Get-WinEvent -FilterHashtable @{LogName='Microsoft-Windows-PowerShell/Operational'; ID=4104} | Select-Object -Property Message | Select-String -Pattern 'SecureString'`  
+
+**za odgovore na sledeca pitanja po potrebi koristiti online dokumentaciju: https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.diagnostics/get-winevent?view=powershell-7.5&viewFallbackFrom=powershell-7.1**
+
+**izvrsite komandu iz prvog primera, koja su imena loga povezana sa openSSH***  
+
+izvrsimo komandu i pogledamo
+
+kad ovo izvrsimo dobicemo gomilu teksta ali resenje je pri dnu    
+
+`Get-WinEvent -ListLog *`
+
+**izvrsiti 8. komandu i umesto policy pretraziti za powershel, koje je ime 3. log providera**
+
+izvrsimo i kopiramo pod name listu  
+
+`Get-WinEvent -ListProvider *PowerShell*`
+
+**izvrsiti komandu 9, koristiti Microsoft-Windows-PowerShell  kao log providera, koliko event id je prikazano za ovog event providera**
+
+izvrsimo komandu i dobijemo broj    
+
+`(Get-WinEvent -ListProvider Microsoft-Windows-PowerShell).Events | Format-Table Id, Description | Measure-Object`
+
+**kako specificiramo broj eventa za prikaz**
+
+resenje je: `-MaxEvents`  
+
+**kada se koristi parametar FilterHashtable i filtrira po noviu koja je vrednost za Informational**
+
+proveriti online dokumentaciju za ovo  
+
+# Xpath queries   
+
+sluzi za adresiranje delova xml dokumenata i manipulisanje stringovima  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
  
  
