@@ -222,21 +222,15 @@ sledeci zadaci se zasnivaju na fajlu na desktopu
 
 koristiti bilo koji od alata da se odgovori na pitanja u nastavku  
 
-scenario 1 (pitanje 1 i 2): administratori servera su ulozili brojne zalbe menadzmentu u vezi sa blokiranje powershell-a u okruzenju, menadzment je konacno odobrio upotrebu powershella u okruzenju. Sada je potrebna vidljivost kako bi se osiguralo da nema praznina u pokrivenosti. 
-
 > Istražili ste ovu temu: koje logove pregledati, koje ID-ove događaja pratiti itd. Omogućili ste PowerShell zapisivanje na testnoj mašini i zamolili kolegu da izvrši različite naredbe.  
 
-scenario 2 (pitanje 3 i 4): tim za bezbednost vise koristi event logove. Zele da osiguraju da mogu da prate da li se evidencija dogadjaja brise. Dodelili ste kolegi da izvrsi ovu radnju  
-
-scenario 3 (pitanja 5, 6, 7): tim za pretnje je podelio svoje istrazivanje o emotetu. Savetovali su da se potrazi id dogadjaja 4104 i tekst "ScriptBlockText" unutar elementa event data. Pronadjite kodirani powershell korisni payload  
-
-scenario 4 (pitanja 8 i 9): stigla je prijava da je pripravnica osumnjicena da je pokrenula neobicne komande na svojoj masini, kao sto je nabrajanje clanova grupe administratora. Visi analiticar je predlozio pretragu C:\Windows\System32\net1.exe. Potvrdite sumnju.  
+## scenario 1 (pitanje 1 i 2): administratori servera su ulozili brojne zalbe menadzmentu u vezi sa blokiranje powershell-a u okruzenju, menadzment je konacno odobrio upotrebu powershella u okruzenju. Sada je potrebna vidljivost kako bi se osiguralo da nema praznina u pokrivenosti.  
 
 **1. Koji je id za detektovanje powershell downgrade attack?**
 
 istrazujemo na netu ovo, google search zbog AI izbacuje odmah rezultat  
 
-nasao sam i na mitre sajtu za downgrade attack u pretrazi sam kucao windows event i nasao id  
+nasao sam i na mitre sajtu za downgrade attack u pretrazi sam kucao windows event i nasao id: 400    
 
 **2. Koji je date and time kad se ovaj napad dogodio MM/DD/YYYY H:MM:SS [AM/PM]** 
 
@@ -247,6 +241,8 @@ kada otvorim event viewer idem na filter current log > i ukucam trazeni id
 kada sam ovo filtrirao onda samo uzmem prvi iz rezultata, nije se u zadatku trazilo da se vidi koji je najraniji ili najkasniji i sva sreca iz rezultata prvi uzmem samo  
 
 da mi ovo nije uspelo iz prve morao bih svaki event da istrazim da vidim koji se razlikuje  
+
+## scenario 2 (pitanje 3 i 4): tim za bezbednost vise koristi event logove. Zele da osiguraju da mogu da prate da li se evidencija dogadjaja brise. Dodelili ste kolegi da izvrsi ovu radnju  
 
 **3. Log clear event je zabelezen, koji je event record id**
 
@@ -260,12 +256,41 @@ kao rezultat dobijemo jedan dogadjaj, i poklopilo se sa id-em 104
 
 u donjem porozoru ispod rezultata idem na details pa na xml view i tamo trazim resenje pod tagom event record id  
 
+**4. Koji je naziv racunara**
 
+ovo pronalazim u istom xml pregledu kao u pretohdnom zadatku, resenje trazim pod computer tagom  
 
+## scenario 3 (pitanja 5, 6, 7): tim za pretnje je podelio svoje istrazivanje o emotetu. Savetovali su da se potrazi id dogadjaja 4104 i tekst "ScriptBlockText" unutar elementa event data. Pronadjite kodirani powershell korisni payload  
 
+**5. Kako se zove prva promenljiva unutar powershell komande**
 
+`Get-WinEvent -Path .\\Desktop\\merged.evtx -FilterXPath '*/System/EventID=4104 and */EventData/Data[@Name="ScriptBlockText"]' | Format-List`  
 
+event 4104 zato sto je to powershell event u windows logu i oznacava script block logging    
 
+Komanda je: `$Va5w3n8`    
+
+Ovo ne bih znao da uradim da nisam otisao na internet i izbunario resenje ovoga, otkud ja znam kako treba da se ispise powershell komanda, to nikad nisam radio, a kamoli da prepoznam ovu skrabotinu kao komandu      
+
+**6. Koji je date and time kad se ovaj napad dogodio MM/DD/YYYY H:MM:SS [AM/PM]**
+
+ovo mi je bilo lako da uradim jer imam id 4104 za tu komandu, onda kada filtriram po id-ju sortiram po datumu i nadjem gde se pominje komanda `$Va5w3n8` i taj datum uzmem  
+
+**7. Koji je execution process id**
+
+ostanem na tom dogadjaju iz prethodnog i u detaljima u xml pregledu pronadjem pod tagom executions process  
+
+## scenario 4 (pitanja 8 i 9): stigla je prijava da je pripravnica osumnjicena da je pokrenula neobicne komande na svojoj masini, kao sto je nabrajanje clanova grupe administratora. Visi analiticar je predlozio pretragu C:\Windows\System32\net1.exe. Potvrdite sumnju.  
+
+**8. Koji je Group Security ID koju je nabrojala**
+
+izvrsimo ovu komandu i pronadjemo group security id  
+
+`Get-WinEvent -Path .\\Desktop\\merged.evtx -FilterXPath '*/EventData/Data[@Name="CallerProcessName"]="C:\Windows\System32\net1.exe"' | Format-List`
+
+**9. Koji je event id**
+
+event procitam iz prvog rezultata prosle komande  
 
 
  
