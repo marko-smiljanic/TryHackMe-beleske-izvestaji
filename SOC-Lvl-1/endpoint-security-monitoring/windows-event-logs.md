@@ -264,17 +264,15 @@ ovo pronalazim u istom xml pregledu kao u pretohdnom zadatku, resenje trazim pod
 
 **5. Kako se zove prva promenljiva unutar powershell komande**
 
-`Get-WinEvent -Path .\\Desktop\\merged.evtx -FilterXPath '*/System/EventID=4104 and */EventData/Data[@Name="ScriptBlockText"]' | Format-List`  
-
-event 4104 zato sto je to powershell event u windows logu i oznacava script block logging    
+`Get-WinEvent -Path .\\Desktop\\merged.evtx -FilterXPath '*/System/EventID=4104 and */EventData/Data[@Name="ScriptBlockText"]' | Format-List`    
 
 Komanda je: `$Va5w3n8`    
 
-Ovo ne bih znao da uradim da nisam otisao na internet i izbunario resenje ovoga, otkud ja znam kako treba da se ispise powershell komanda, to nikad nisam radio, a kamoli da prepoznam ovu skrabotinu kao komandu      
+Ovo ne bih znao da uradim da nisam otisao na internet i izbunario resenje ovoga, otkud ja znam kako treba da se ispise powershell komanda, to nikad nisam radio, a kamoli da prepoznam ovu skrabotinu kao komandu u gomili teksta       
 
 **6. Koji je date and time kad se ovaj napad dogodio MM/DD/YYYY H:MM:SS [AM/PM]**
 
-ovo mi je bilo lako da uradim jer imam id 4104 za tu komandu, onda kada filtriram po id-ju sortiram po datumu i nadjem gde se pominje komanda `$Va5w3n8` i taj datum uzmem  
+ovo mi je bilo lako da uradim jer imam id 4104 za tu komandu, onda u event vieweru kada filtriram po id-ju sortiram po datumu i nadjem u details gde se pominje komanda `$Va5w3n8` i taj datum uzmem  
 
 **7. Koji je execution process id**
 
@@ -293,5 +291,6 @@ izvrsimo ovu komandu i pronadjemo group security id
 event procitam iz prvog rezultata prosle komande  
 
 
+jako naporan modul sa ne tako ociglednim resenjima i sa ekstremno bagovitom virtuelnom masinom  
  
  
