@@ -232,7 +232,22 @@ scenario 3 (pitanja 5, 6, 7): tim za pretnje je podelio svoje istrazivanje o emo
 
 scenario 4 (pitanja 8 i 9): stigla je prijava da je pripravnica osumnjicena da je pokrenula neobicne komande na svojoj masini, kao sto je nabrajanje clanova grupe administratora. Visi analiticar je predlozio pretragu C:\Windows\System32\net1.exe. Potvrdite sumnju.  
 
-**1. **
+**1. Koji je id za detektovanje powershell downgrade attack?**
+
+istrazujemo na netu ovo, google search zbog AI izbacuje odmah rezultat  
+
+nasao sam i na mitre sajtu za downgrade attack u pretrazi sam kucao windows event i nasao id  
+
+**2. Koji je date and time kad se ovaj napad dogodio MM/DD/YYYY H:MM:SS [AM/PM]** 
+
+da bi smo ovo nasli moramo primeniti filter za event id koji je 400 (iz prethodnog zadatka)   
+
+kada otvorim event viewer idem na > filter current log > i ukucam trazeni id  
+
+kada sam ovo filtrirao onda samo uzmem prvi iz rezultata, nije se u zadatku trazilo da se vidi koji je najraniji ili najkasniji i sva sreca iz rezultata prvi uzmem samo  
+
+**3. Log clear event je zabelezen, koji je event record id**
+
 
 
 
