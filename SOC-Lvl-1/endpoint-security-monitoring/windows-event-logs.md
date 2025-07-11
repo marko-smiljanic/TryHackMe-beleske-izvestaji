@@ -242,11 +242,23 @@ nasao sam i na mitre sajtu za downgrade attack u pretrazi sam kucao windows even
 
 da bi smo ovo nasli moramo primeniti filter za event id koji je 400 (iz prethodnog zadatka)   
 
-kada otvorim event viewer idem na > filter current log > i ukucam trazeni id  
+kada otvorim event viewer idem na filter current log > i ukucam trazeni id  
 
 kada sam ovo filtrirao onda samo uzmem prvi iz rezultata, nije se u zadatku trazilo da se vidi koji je najraniji ili najkasniji i sva sreca iz rezultata prvi uzmem samo  
 
+da mi ovo nije uspelo iz prve morao bih svaki event da istrazim da vidim koji se razlikuje  
+
 **3. Log clear event je zabelezen, koji je event record id**
+
+hint: proveri xml view  
+
+prvo izguglamo log clear event id koji je: 1102 i 104  
+
+onda pretrazimo na isti nacin kao u prethodnom zadatku, u polje za id mozemo da unesemo oba id-ja od jednom: filter current log > i ukucam ovako: 1102, 104  
+
+kao rezultat dobijemo jedan dogadjaj, i poklopilo se sa id-em 104  
+
+u donjem porozoru ispod rezultata idem na details pa na xml view i tamo trazim resenje pod tagom event record id  
 
 
 
