@@ -98,6 +98,75 @@ ovaj dogadjaj trazi izmene ili modifikacije registra, mogu ukljucivati zloupotre
 </RuleGroup>
 ```
 
+pretrazujemo uobicajene foldere gde se nalaze objekti registra  
+
+## event id 15: file create stream hash  
+
+trazi sve datoteke kreirane u alternativnom toku podataka, uobicajena tehnika za skrivanje zlonamernog softvera  
+
+```
+<RuleGroup name="" groupRelation="or">
+	<FileCreateStreamHash onmatch="include">
+	 	<TargetFilename condition="end with">.hta</TargetFilename>
+	</FileCreateStreamHash>
+</RuleGroup>
+```
+
+trazenje datoteke sa ekstenzijom .hta koje su smestene unutar alternativnog toka podataka  
+
+## event id 22: dns event  
+
+evidentira sve dns upite, najcesce se iskljucuju svi pouzdani domeni za koje znamo da ce se koristiti cesto, profiltriramo i gledamo ostale  
+
+```
+<RuleGroup name="" groupRelation="or">
+	<DnsQuery onmatch="exclude">
+	 	<QueryName condition="end with">.microsoft.com</QueryName>
+	</DnsQuery>
+</RuleGroup>
+```
+
+# instaliranje sysmona
+
+veoma je jednostavno i zahteva samo preuzmanje binarne datoteke sa microsoftove stranice, takodje mogudje preuzeti sve sysinternal alate pomocu powershell-a  
+
+preporucuje se koriscenje sysmon konfiguracijone datoteke zajedno sa sysmon  
+
+kao primer koristicemo sysmon -config iz swift on security github repozitorijuma  
+
+https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon  
+https://learn.microsoft.com/en-us/sysinternals/downloads/sysinternals-suite  
+powershell komanda: `Download-SysInternalsTools C:\Sysinternals`  
+
+potrebno je da preuzmemo i sysmon konfiguracioni fajl i kreiramo sopstveni konfiguracioni fajl  
+
+https://github.com/SwiftOnSecurity/sysmon-config
+https://github.com/ion-storm/sysmon-config/blob/develop/sysmonconfig-export.xml  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
