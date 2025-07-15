@@ -143,6 +143,18 @@ potrebno je da preuzmemo i sysmon konfiguracioni fajl i kreiramo sopstveni konfi
 https://github.com/SwiftOnSecurity/sysmon-config
 https://github.com/ion-storm/sysmon-config/blob/develop/sysmonconfig-export.xml  
 
+da bi smo pokrenuli sysmon moramo otvoriti powershell kao administrator, pokrecemo ovu komandu: `Sysmon.exe -accepteula -i ..\Configurations\swift.xml`  
+
+ovo pokrece binarni fajl i treba prihvatiti ugovor o licenci za krajnjeg korisnika   
+
+kada pokrenemo sysmon sa zeljenom konfiguracionom datotekom, pokrenemo event log sa komandom: `Applications and Services Logs/Microsoft/Windows/Sysmon/Operational`  
+
+u bilo kom trenutku mozemo promeniti config fajl deinstaliranjem ili azuriranje konfiguracije zamenom sa novim config fajlom  
+
+u virtuelnoj masini je vec sve kreirano unapred (sysmon i config fajl), ali bitno je znati proces    
+
+ovde su nam dali i da preuzmemo fajlove za vezbanje ali ne vidim poentu ako radimo na vm, tamo vec sve ima...     
+
 
 
 
